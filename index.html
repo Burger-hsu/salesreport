@@ -6,8 +6,6 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <title>業務回報系統</title>
 <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet" />
-<!-- 正式啟用 Google 登入時，請解除下方註解，並填入 GOOGLE_CLIENT_ID / ALLOWED_DOMAIN -->
-<!-- <script src="https://accounts.google.com/gsi/client" async defer></script> -->
 <style>
 :root{
   --bg:#F7F6F2;--surf:#fff;--surf2:#F0EFE9;
@@ -25,16 +23,25 @@
 }
 *{box-sizing:border-box;margin:0;padding:0}
 body{font-family:'Noto Sans TC',sans-serif;background:var(--bg);color:var(--tx);min-height:100vh;font-size:14px}
+
+/* ── Login ── */
 #login-screen{position:fixed;inset:0;z-index:9999;background:var(--bg);display:flex;align-items:center;justify-content:center}
-.lcard{background:var(--surf);border:1px solid var(--border);border-radius:18px;padding:44px 40px 36px;width:360px;text-align:center;box-shadow:0 4px 24px rgba(0,0,0,.07)}
+.lcard{background:var(--surf);border:1px solid var(--border);border-radius:18px;padding:44px 40px 36px;width:380px;text-align:center;box-shadow:0 4px 24px rgba(0,0,0,.07)}
 .lcard .lm{font-family:'DM Mono',monospace;font-size:10px;letter-spacing:.14em;color:var(--tx3);text-transform:uppercase;margin-bottom:6px}
 .lcard h1{font-size:22px;font-weight:600;letter-spacing:-.03em;margin-bottom:8px}
-.lcard p{font-size:13px;color:var(--tx2);margin-bottom:28px;line-height:1.5}
+.lcard p{font-size:13px;color:var(--tx2);margin-bottom:24px;line-height:1.5}
+.login-form{text-align:left}
+.login-form .dl{font-size:10px;color:var(--tx3);font-weight:600;letter-spacing:.06em;text-transform:uppercase;margin-bottom:5px}
+.login-form .fi{width:100%;padding:9px 11px;border:1px solid var(--border);border-radius:var(--r);font-size:14px;font-family:'Noto Sans TC',sans-serif;background:var(--surf);color:var(--tx);outline:none;margin-bottom:12px}
+.login-form .fi:focus{border-color:var(--accent)}
+.role-sel{display:flex;gap:8px;margin-bottom:20px}
+.role-opt{flex:1;padding:10px;border:1.5px solid var(--border);border-radius:var(--r);cursor:pointer;font-size:13px;font-weight:500;font-family:'Noto Sans TC',sans-serif;background:none;color:var(--tx2);transition:all .15s;text-align:center}
+.role-opt:hover{background:var(--surf2)}
+.role-opt.active{border-color:var(--accent);background:var(--accent-l);color:var(--accent)}
 #login-err{background:var(--red-l);border:1px solid #FECACA;border-radius:8px;padding:10px 14px;font-size:13px;color:var(--red);margin-bottom:14px;display:none}
-#g-btn{display:flex;justify-content:center}
-.dev-btn{margin-top:10px;width:100%;padding:9px;border:1px dashed var(--border2);border-radius:var(--r);background:none;cursor:pointer;font-size:13px;color:var(--tx2);font-family:'Noto Sans TC',sans-serif}
-.dev-btn:hover{background:var(--surf2)}
-.lnote{font-size:11px;color:var(--tx3);margin-top:16px;line-height:1.5}
+.lnote{font-size:11px;color:var(--tx3);margin-top:14px;line-height:1.5}
+
+/* ── Layout ── */
 .app{display:flex;min-height:100vh}
 .sidebar{width:220px;background:var(--surf);border-right:1px solid var(--border);display:flex;flex-direction:column;position:fixed;height:100vh;z-index:10}
 .sb-logo{padding:20px 20px 16px;border-bottom:1px solid var(--border)}
@@ -49,6 +56,8 @@ body{font-family:'Noto Sans TC',sans-serif;background:var(--bg);color:var(--tx);
 .uav{width:32px;height:32px;border-radius:50%;background:var(--tx);color:#fff;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:600;flex-shrink:0}
 .uname{font-size:13px;font-weight:500}
 .urole{font-size:11px;color:var(--tx3)}
+.sb-logout{margin-left:auto;background:none;border:none;cursor:pointer;color:var(--tx3);font-size:18px;padding:2px;line-height:1}
+.sb-logout:hover{color:var(--red)}
 .main{margin-left:220px;flex:1;min-width:0}
 .topbar{height:56px;background:var(--surf);border-bottom:1px solid var(--border);display:flex;align-items:center;padding:0 24px;gap:12px;position:sticky;top:0;z-index:5}
 .tb-title{font-size:16px;font-weight:600;letter-spacing:-.02em;flex:1}
@@ -60,6 +69,8 @@ body{font-family:'Noto Sans TC',sans-serif;background:var(--bg);color:var(--tx);
 .mnv:hover{background:var(--border)}
 #cur-mo{font-size:13px;font-weight:500;min-width:70px;text-align:center}
 .content{padding:24px}
+
+/* ── Metrics ── */
 .mgrid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:24px}
 .mc{background:var(--surf);border:1px solid var(--border);border-radius:var(--rlg);padding:16px 18px;box-shadow:var(--sh)}
 .mc.hi{border-color:var(--accent);background:var(--accent-l)}
@@ -68,6 +79,8 @@ body{font-family:'Noto Sans TC',sans-serif;background:var(--bg);color:var(--tx);
 .mc-ico{width:28px;height:28px;border-radius:7px;display:flex;align-items:center;justify-content:center;font-size:13px}
 .mc-val{font-size:28px;font-weight:600;letter-spacing:-.03em;line-height:1}
 .mc-sub{font-size:11px;color:var(--tx3);margin-top:3px}
+
+/* ── Funnel / Table ── */
 .fw,.rtw,.fcard,.rep-bar,.ri{background:var(--surf);border:1px solid var(--border);border-radius:var(--rlg);box-shadow:var(--sh)}
 .fw{padding:18px;margin-bottom:24px}
 .fh{display:flex;justify-content:space-between;align-items:center;margin-bottom:14px}
@@ -85,6 +98,8 @@ body{font-family:'Noto Sans TC',sans-serif;background:var(--bg);color:var(--tx);
 .rt tr:hover td{background:var(--surf2)}
 .mono{font-family:'DM Mono',monospace}
 .rg{color:var(--green)}.ra{color:var(--amber)}.rr{color:var(--red)}
+
+/* ── Filters ── */
 .lhdr{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px}
 .frow2{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:14px}
 .fchip{padding:4px 12px;border-radius:20px;font-size:12px;font-weight:500;border:1px solid var(--border);cursor:pointer;background:none;color:var(--tx2);transition:all .15s;font-family:'Noto Sans TC',sans-serif}
@@ -93,6 +108,8 @@ body{font-family:'Noto Sans TC',sans-serif;background:var(--bg);color:var(--tx);
 .rep-bar{padding:12px 14px;margin-bottom:16px;display:none}
 .rep-bar.show{display:block}
 .rep-bar-lbl{font-size:10px;font-weight:600;letter-spacing:.08em;color:var(--tx3);text-transform:uppercase;margin-bottom:8px}
+
+/* ── Customer Cards ── */
 .clist{display:flex;flex-direction:column;gap:8px}
 .cc{background:var(--surf);border:1px solid var(--border);border-radius:var(--rlg);overflow:hidden;box-shadow:var(--sh);transition:border-color .15s}
 .cc:hover{border-color:var(--border2)}
@@ -136,11 +153,17 @@ body{font-family:'Noto Sans TC',sans-serif;background:var(--bg);color:var(--tx);
 .sb-frz{background:var(--gray-l);color:var(--gray)}
 .sb-dead{background:#f5f5f5;color:#aaa}
 .action-row{display:flex;gap:6px;margin-top:12px;flex-wrap:wrap}
+
+/* ── Reply box ── */
 .rbox{background:var(--accent-l);border:1px solid #C7D0FF;border-radius:var(--r);padding:10px 12px;margin-top:10px}
 .rlbl{font-size:10px;font-weight:600;color:var(--accent);letter-spacing:.05em;text-transform:uppercase;margin-bottom:5px}
 .rtxt{font-size:13px;color:var(--blue);line-height:1.6}
 .rmeta{font-size:11px;color:#6B7BE8;margin-top:3px}
 .rinput{width:100%;padding:7px 9px;border:1px solid #C7D0FF;border-radius:var(--r);font-size:13px;font-family:'Noto Sans TC',sans-serif;background:var(--surf);color:var(--tx);outline:none;resize:vertical;min-height:54px}
+.reply-send-btn{margin-top:7px;padding:5px 14px;border-radius:var(--r);border:none;background:var(--accent);color:#fff;font-size:12px;font-weight:500;cursor:pointer;font-family:'Noto Sans TC',sans-serif}
+.reply-send-btn:hover{background:#1a3bdd}
+
+/* ── Timeline ── */
 .tl-wrap{margin-top:16px;border-top:1px solid var(--border);padding-top:14px}
 .tl-hdr{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px}
 .tl-title{font-size:11px;font-weight:600;letter-spacing:.06em;color:var(--tx3);text-transform:uppercase}
@@ -161,8 +184,12 @@ body{font-family:'Noto Sans TC',sans-serif;background:var(--bg);color:var(--tx);
 .tl-reply-meta{font-size:10px;color:#8b97e8;margin-top:2px}
 .tl-reply-input{width:100%;padding:6px 8px;border:1px solid #C7D0FF;border-radius:6px;font-size:12px;font-family:'Noto Sans TC',sans-serif;background:var(--surf);color:var(--tx);outline:none;resize:vertical;min-height:44px}
 .tl-more-btn{font-size:12px;color:var(--accent);background:none;border:none;cursor:pointer;padding:4px 0;font-family:'Noto Sans TC',sans-serif;text-decoration:underline;text-underline-offset:2px;margin-top:4px}
+
+/* ── Section divider ── */
 .sdiv{display:flex;align-items:center;gap:10px;margin:20px 0 10px;font-size:11px;font-weight:600;color:var(--tx3);letter-spacing:.06em;text-transform:uppercase}
 .sdiv::after{content:'';flex:1;height:1px;background:var(--border)}
+
+/* ── History ── */
 .ri{padding:16px 18px;margin-bottom:10px}
 .ri-hdr{display:flex;align-items:center;gap:8px;margin-bottom:10px;flex-wrap:wrap}
 .ri-date{font-size:12px;color:var(--tx3);font-family:'DM Mono',monospace}
@@ -173,6 +200,8 @@ body{font-family:'Noto Sans TC',sans-serif;background:var(--bg);color:var(--tx);
 .pri-warn{background:var(--amber-l);color:var(--amber)}
 .pri-ok{background:var(--green-l);color:var(--green)}
 .pri-done{background:#f5f5f5;color:#aaa}
+
+/* ── Form ── */
 .fwrap{max-width:600px}
 .fcard{padding:22px;margin-bottom:18px}
 .ftitle{font-size:14px;font-weight:600;margin-bottom:16px}
@@ -180,12 +209,24 @@ body{font-family:'Noto Sans TC',sans-serif;background:var(--bg);color:var(--tx);
 .achip{padding:5px 13px;border-radius:20px;border:1px solid var(--border);background:none;cursor:pointer;font-size:12.5px;color:var(--tx2);transition:all .15s;font-family:'Noto Sans TC',sans-serif}
 .achip:hover{background:var(--surf2)}
 .achip.active{background:var(--tx);color:#fff;border-color:var(--tx)}
+
+/* ── Rep management (manager only) ── */
+.rep-mgmt{background:var(--surf);border:1px solid var(--border);border-radius:var(--rlg);padding:18px;margin-bottom:18px;box-shadow:var(--sh)}
+.rep-mgmt-title{font-size:13px;font-weight:600;margin-bottom:14px}
+.rep-row{display:flex;align-items:center;justify-content:space-between;padding:8px 10px;border-radius:var(--r);border:1px solid var(--border);margin-bottom:7px;background:var(--surf2)}
+.rep-row-name{font-size:13px;font-weight:500}
+.rep-row-role{font-size:11px;color:var(--tx3)}
+
+/* ── Buttons ── */
 .btn{display:inline-flex;align-items:center;gap:5px;padding:7px 15px;border-radius:var(--r);font-size:13px;font-weight:500;cursor:pointer;transition:all .15s;border:none;font-family:'Noto Sans TC',sans-serif}
 .btn-p{background:var(--tx);color:#fff}.btn-p:hover{background:#333}
 .btn-s{background:var(--surf2);color:var(--tx);border:1px solid var(--border)}.btn-s:hover{background:var(--border)}
 .btn-d{background:var(--red-l);color:var(--red);border:1px solid #FECACA}.btn-d:hover{background:#FEE2E2}
 .btn-g{background:none;color:var(--tx2);border:1px solid var(--border)}.btn-g:hover{background:var(--surf2)}
+.btn-green{background:var(--green-l);color:var(--green);border:1px solid #6ee7b7}.btn-green:hover{background:#d1fae5}
 .btn-sm{padding:4px 10px;font-size:12px}
+
+/* ── Modal ── */
 .mov{display:none;position:fixed;inset:0;background:rgba(0,0,0,.38);z-index:200;align-items:center;justify-content:center}
 .mov.open{display:flex}
 .mbox{background:var(--surf);border-radius:var(--rlg);padding:22px;width:90%;max-width:420px;border:1px solid var(--border);box-shadow:0 8px 32px rgba(0,0,0,.12)}
@@ -195,33 +236,39 @@ body{font-family:'Noto Sans TC',sans-serif;background:var(--bg);color:var(--tx);
 .crchip{padding:5px 12px;border-radius:20px;border:1px solid var(--border);background:none;cursor:pointer;font-size:12px;color:var(--tx2);font-family:'Noto Sans TC',sans-serif;transition:all .15s}
 .crchip:hover{background:var(--surf2)}
 .crchip.active{background:var(--tx);color:#fff;border-color:var(--tx)}
+
+/* ── Toast ── */
 .toast{position:fixed;bottom:24px;right:24px;background:var(--tx);color:#fff;padding:10px 16px;border-radius:var(--r);font-size:13px;font-weight:500;z-index:9999;opacity:0;transform:translateY(8px);transition:all .22s;pointer-events:none}
 .toast.show{opacity:1;transform:translateY(0)}
-@media(max-width:900px){
-  .sidebar{position:static;width:100%;height:auto}
-  .app{flex-direction:column}
-  .main{margin-left:0}
-  .mgrid{grid-template-columns:repeat(2,1fr)}
-  .topbar{overflow:auto}
-}
+
+@media(max-width:900px){.sidebar{position:static;width:100%;height:auto}.app{flex-direction:column}.main{margin-left:0}.mgrid{grid-template-columns:repeat(2,1fr)}.topbar{overflow:auto}}
 @media(max-width:560px){.mgrid{grid-template-columns:1fr}.cright{display:none}.topbar{padding:0 12px}.content{padding:16px}}
 </style>
 </head>
 <body>
 
+<!-- ── Login ── -->
 <div id="login-screen">
   <div class="lcard">
     <div class="lm">Sales OS</div>
     <h1>業務回報系統</h1>
-    <p>請以公司 Google 帳號登入<br />僅限公司內部人員使用</p>
-    <div id="login-err">此帳號非公司內部帳號，請改用公司帳號。</div>
-    <div id="g-btn"></div>
-    <button class="dev-btn" onclick="devLogin('manager')">🔧 以主管身份進入（測試用）</button>
-    <button class="dev-btn" style="margin-top:6px" onclick="devLogin('rep')">🔧 以業務身份進入（測試用）</button>
-    <div class="lnote">如有問題請聯絡 IT 部門</div>
+    <p>請輸入您的姓名並選擇身份進入系統</p>
+    <div id="login-err">請輸入姓名後再進入。</div>
+    <div class="login-form">
+      <div class="dl">您的姓名</div>
+      <input type="text" class="fi" id="login-name" placeholder="例如：王小明" maxlength="20" />
+      <div class="dl" style="margin-bottom:8px">身份</div>
+      <div class="role-sel">
+        <button class="role-opt active" id="role-opt-rep" onclick="selectLoginRole('rep')">👤 業務</button>
+        <button class="role-opt" id="role-opt-manager" onclick="selectLoginRole('manager')">👔 主管</button>
+      </div>
+      <button class="btn btn-p" style="width:100%;justify-content:center;padding:11px" onclick="doLogin()">進入系統 →</button>
+    </div>
+    <div class="lnote">如有問題請聯絡主管</div>
   </div>
 </div>
 
+<!-- ── App ── -->
 <div class="app" id="main-app" style="display:none">
   <aside class="sidebar">
     <div class="sb-logo"><div class="lm">Sales OS</div><h1>業務回報系統</h1></div>
@@ -231,29 +278,33 @@ body{font-family:'Noto Sans TC',sans-serif;background:var(--bg);color:var(--tx);
       <button class="ni" onclick="goPage('customers',this)"><span>🏢</span>客戶管理</button>
       <button class="ni" onclick="goPage('report-form',this)"><span>📝</span>每日回報</button>
       <button class="ni" onclick="goPage('history',this)"><span>📋</span>回報紀錄</button>
+      <button class="ni" id="nav-settings" onclick="goPage('settings',this)" style="display:none"><span>⚙️</span>系統設定</button>
     </nav>
     <div class="sb-user">
-      <div class="uav" id="sb-av">陳</div>
-      <div><div class="uname" id="sb-name">陳總經理</div><div class="urole" id="sb-role">主管</div></div>
+      <div class="uav" id="sb-av">王</div>
+      <div><div class="uname" id="sb-name">王小明</div><div class="urole" id="sb-role">業務</div></div>
+      <button class="sb-logout" title="登出" onclick="doLogout()">⏏</button>
     </div>
   </aside>
 
   <div class="main">
     <header class="topbar">
       <div class="tb-title" id="tb-title">月度總覽</div>
-      <div class="role-tog">
+      <div class="role-tog" id="role-tog-wrap">
         <button class="rb" onclick="setRole('rep',this)">業務視角</button>
         <button class="rb active" onclick="setRole('manager',this)">主管視角</button>
       </div>
       <div class="msel">
-        <button class="mnv" onclick="chMo(-1)">←</button>
+        <button class="mnv" onclick="chMo(-1)">&#8592;</button>
         <span id="cur-mo">2026年 5月</span>
-        <button class="mnv" onclick="chMo(1)">→</button>
+        <button class="mnv" onclick="chMo(1)">&#8594;</button>
       </div>
       <button class="btn btn-p btn-sm" onclick="openMod('add')">+ 新增客戶</button>
     </header>
 
     <div class="content">
+
+      <!-- OVERVIEW -->
       <div id="pg-overview">
         <div class="mgrid">
           <div class="mc hi"><div class="mc-top"><div class="mc-lbl">本月拜訪</div><div class="mc-ico" style="background:#C7D0FF;color:var(--accent)">🚗</div></div><div class="mc-val" id="mv" style="color:var(--accent)">12</div><div class="mc-sub">次</div></div>
@@ -263,8 +314,8 @@ body{font-family:'Noto Sans TC',sans-serif;background:var(--bg);color:var(--tx);
         </div>
         <div class="fw">
           <div class="fh"><div class="slbl">業績漏斗</div>
-            <select style="font-size:12px;border:1px solid var(--border);border-radius:7px;padding:4px 8px;background:var(--surf2);color:var(--tx2);outline:none;font-family:'Noto Sans TC',sans-serif" onchange="ovFilter(this.value)">
-              <option value="all">全部業務</option><option value="王小明">王小明</option><option value="林美玲">林美玲</option><option value="陳志豪">陳志豪</option>
+            <select style="font-size:12px;border:1px solid var(--border);border-radius:7px;padding:4px 8px;background:var(--surf2);color:var(--tx2);outline:none;font-family:'Noto Sans TC',sans-serif" id="ov-filter-sel" onchange="ovFilter(this.value)">
+              <option value="all">全部業務</option>
             </select>
           </div>
           <div class="frow"><div class="ftag">拜訪</div><div class="fbg"><div class="fbar" id="fb-v" style="width:100%;background:#C7D0FF;color:var(--purple)">12次</div></div><div class="fnum" id="fn-v">12</div></div>
@@ -278,16 +329,12 @@ body{font-family:'Noto Sans TC',sans-serif;background:var(--bg);color:var(--tx);
         </div>
       </div>
 
+      <!-- CUSTOMERS -->
       <div id="pg-customers" style="display:none">
         <div class="lhdr"><div class="slbl">客戶管理</div><button class="btn btn-p btn-sm" onclick="openMod('add')">+ 新增客戶</button></div>
         <div class="rep-bar" id="cust-rep-bar">
           <div class="rep-bar-lbl">依業務篩選</div>
-          <div class="frow2" id="cust-rep-chips">
-            <button class="fchip active" onclick="filtCustRep('all',this)">全部業務</button>
-            <button class="fchip" onclick="filtCustRep('王小明',this)">王小明</button>
-            <button class="fchip" onclick="filtCustRep('林美玲',this)">林美玲</button>
-            <button class="fchip" onclick="filtCustRep('陳志豪',this)">陳志豪</button>
-          </div>
+          <div class="frow2" id="cust-rep-chips"></div>
         </div>
         <div class="frow2" id="cust-tabs">
           <button class="fchip active" onclick="filtCust('active',this)">進行中</button>
@@ -303,12 +350,13 @@ body{font-family:'Noto Sans TC',sans-serif;background:var(--bg);color:var(--tx);
         <div class="clist" id="cust-list"></div>
       </div>
 
+      <!-- REPORT FORM -->
       <div id="pg-report-form" style="display:none">
         <div class="fwrap">
           <div class="fcard">
             <div class="ftitle">📝 每日業務回報</div>
             <div class="fg"><div class="dl">日期</div><input type="date" class="fi" id="r-date" /></div>
-            <div class="fg"><div class="dl">負責業務</div><select class="fi" id="r-rep"><option>王小明</option><option>林美玲</option><option>陳志豪</option></select></div>
+            <div class="fg"><div class="dl">負責業務</div><select class="fi" id="r-rep"></select></div>
             <div class="fg"><div class="dl">客戶</div><select class="fi" id="r-cust"></select></div>
             <div class="fg"><div class="dl">本次活動（可複選）</div>
               <div class="achips">
@@ -332,29 +380,44 @@ body{font-family:'Noto Sans TC',sans-serif;background:var(--bg);color:var(--tx);
         </div>
       </div>
 
+      <!-- HISTORY -->
       <div id="pg-history" style="display:none">
         <div class="lhdr"><div class="slbl">回報紀錄</div><div style="font-size:12px;color:var(--tx3)">未結案 × 最久未跟進優先</div></div>
         <div class="rep-bar" id="hist-rep-bar">
           <div class="rep-bar-lbl">依業務篩選</div>
-          <div class="frow2" id="hist-rep-chips">
-            <button class="fchip active" onclick="filtHistRep('all',this)">全部業務</button>
-            <button class="fchip" onclick="filtHistRep('王小明',this)">王小明</button>
-            <button class="fchip" onclick="filtHistRep('林美玲',this)">林美玲</button>
-            <button class="fchip" onclick="filtHistRep('陳志豪',this)">陳志豪</button>
-          </div>
+          <div class="frow2" id="hist-rep-chips"></div>
         </div>
         <div id="hist-list"></div>
       </div>
+
+      <!-- SETTINGS (manager only) -->
+      <div id="pg-settings" style="display:none">
+        <div class="slbl" style="margin-bottom:18px">⚙️ 系統設定</div>
+        <div class="rep-mgmt">
+          <div class="rep-mgmt-title">業務名單管理</div>
+          <div id="rep-mgmt-list"></div>
+          <div style="display:flex;gap:8px;margin-top:14px">
+            <input type="text" class="fi" id="new-rep-name" placeholder="新增業務姓名" style="flex:1" maxlength="10" />
+            <select class="fi" id="new-rep-role" style="width:110px">
+              <option value="rep">業務</option>
+              <option value="manager">主管</option>
+            </select>
+            <button class="btn btn-p" onclick="addRep()">新增</button>
+          </div>
+        </div>
+      </div>
+
     </div>
   </div>
 </div>
 
+<!-- Modal: 新增客戶 -->
 <div class="mov" id="mod-add" onclick="if(event.target===this)closeMod('add')">
   <div class="mbox">
     <div class="mtitle">新增客戶</div>
     <div class="fg"><div class="dl">公司名稱</div><input type="text" class="fi" id="add-name" placeholder="公司全名" /></div>
-    <div class="fg"><div class="dl">簡稱</div><input type="text" class="fi" id="add-sh" placeholder="例如：台積" /></div>
-    <div class="fg"><div class="dl">負責業務</div><select class="fi" id="add-rep"><option>王小明</option><option>林美玲</option><option>陳志豪</option></select></div>
+    <div class="fg"><div class="dl">簡稱（顯示於卡片）</div><input type="text" class="fi" id="add-sh" placeholder="例如：台積" maxlength="4" /></div>
+    <div class="fg"><div class="dl">負責業務</div><select class="fi" id="add-rep"></select></div>
     <div class="fg"><div class="dl">初始分級</div><select class="fi" id="add-grade"><option value="tracking">持續追蹤</option><option value="prospect">有望成交</option><option value="partner">有望合作</option><option value="strategic">長期戰略合作</option></select></div>
     <div class="fg"><div class="dl">首次跟進日期</div><input type="date" class="fi" id="add-fu" /></div>
     <div class="mact">
@@ -364,6 +427,7 @@ body{font-family:'Noto Sans TC',sans-serif;background:var(--bg);color:var(--tx);
   </div>
 </div>
 
+<!-- Modal: 結案 / 冷凍 -->
 <div class="mov" id="mod-close" onclick="if(event.target===this)closeMod('close')">
   <div class="mbox">
     <div class="mtitle" id="close-title">結案確認</div>
@@ -378,18 +442,54 @@ body{font-family:'Noto Sans TC',sans-serif;background:var(--bg);color:var(--tx);
   </div>
 </div>
 
+<!-- Modal: 確認刪除客戶 -->
+<div class="mov" id="mod-del-cust" onclick="if(event.target===this)closeMod('del-cust')">
+  <div class="mbox">
+    <div class="mtitle">⚠️ 確認刪除客戶</div>
+    <p style="font-size:13px;color:var(--tx2);line-height:1.7;margin-bottom:4px">刪除後所有相關拜訪紀錄也會一併移除，<strong>無法復原</strong>。</p>
+    <p style="font-size:13px;color:var(--red);font-weight:600" id="del-cust-name"></p>
+    <div class="mact">
+      <button class="btn btn-s" style="flex:1" onclick="closeMod('del-cust')">取消</button>
+      <button class="btn btn-d" style="flex:1" onclick="confirmDelCust()">確認刪除</button>
+    </div>
+  </div>
+</div>
+
+<!-- Modal: 確認刪除業務 -->
+<div class="mov" id="mod-del-rep" onclick="if(event.target===this)closeMod('del-rep')">
+  <div class="mbox">
+    <div class="mtitle">⚠️ 確認移除業務</div>
+    <p style="font-size:13px;color:var(--tx2);line-height:1.7">移除後此業務將無法登入，但其負責的客戶與紀錄不受影響。</p>
+    <p style="font-size:13px;color:var(--red);font-weight:600;margin-top:6px" id="del-rep-name"></p>
+    <div class="mact">
+      <button class="btn btn-s" style="flex:1" onclick="closeMod('del-rep')">取消</button>
+      <button class="btn btn-d" style="flex:1" onclick="confirmDelRep()">確認移除</button>
+    </div>
+  </div>
+</div>
+
 <div class="toast" id="toast-el"></div>
 
 <script>
-var GOOGLE_CLIENT_ID = 'YOUR_CLIENT_ID.apps.googleusercontent.com';
-var ALLOWED_DOMAIN = 'yourcompany.com';
-
-var role = 'manager', curPage = 'overview', moIdx = 4;
+// ── State ──
+var role = 'rep', curPage = 'overview', moIdx = 4;
 var custFilt = 'active', custRepFilt = 'all', histRepFilt = 'all';
 var closingId = null, closingType = null;
+var delCustId = null, delRepIdx = null;
+var loginRole = 'rep';
+var currentUser = '';
 var mos = ['1月','2月','3月','4月','5月','6月','7月','8月','9月','10月','11月','12月'];
 var moData = {4:{v:12,q:6,c:2},3:{v:9,q:4,c:1},2:{v:11,q:5,c:3}};
 
+// ── Team (業務名單) ──
+var team = [
+  {name:'王小明', role:'rep'},
+  {name:'林美玲', role:'rep'},
+  {name:'陳志豪', role:'rep'},
+  {name:'陳總經理', role:'manager'}
+];
+
+// ── Customers ──
 var custs = [
   {id:1,name:'台積電股份有限公司',sh:'台積',rep:'王小明',grade:'strategic',status:'active',fu:'2026-05-18',note:'Q3採購預算確認中，偏好台灣廠商。',reply:'下次拜訪前確認規格，帶最新 spec sheet。',replyDate:'2026/05/11 09:30',avBg:'var(--purple-l)',avCo:'var(--purple)'},
   {id:2,name:'聯發科技股份有限公司',sh:'聯發',rep:'林美玲',grade:'partner',status:'active',fu:'2026-05-21',note:'已提案，等採購主管核准，林經理態度積極。',reply:'可提小量試用方案降低決策門檻。',replyDate:'2026/05/14 17:00',avBg:'var(--green-l)',avCo:'var(--green)'},
@@ -400,9 +500,11 @@ var custs = [
   {id:7,name:'廣達電腦股份有限公司',sh:'廣達',rep:'王小明',grade:'prospect',status:'dead',fu:'2026-03-01',deadAt:'2026/03/15',deadReason:'輸單',note:'最終選擇競品，價格差距大。',reply:'記錄競品報價，下次投標調整策略。',replyDate:'2026/03/15 16:00',avBg:'var(--gray-l)',avCo:'var(--gray)'}
 ];
 
+// ── Visit Logs ──
 var visitLogs = [
   {id:101,custId:1,date:'2026/05/10',dateVal:'2026-05-10',rep:'王小明',acts:['🚗 客戶拜訪','📞 電話'],quote:0,note:'與採購部張副理確認 Q3 規格，對方希望加入備援模組，需回公司確認報價。',managerReply:'備援模組先確認毛利率，必要時找技術部門協同。',managerReplyDate:'2026/05/11 09:30'},
   {id:102,custId:1,date:'2026/04/22',dateVal:'2026-04-22',rep:'王小明',acts:['🚗 客戶拜訪'],quote:0,note:'初次正式拜訪，確認採購窗口為張副理，對方對產品規格有興趣，要求下次提案。',managerReply:'',managerReplyDate:''},
+  {id:103,custId:1,date:'2026/03/10',dateVal:'2026-03-10',rep:'王小明',acts:['📞 電話'],quote:0,note:'電話開發，對方願意安排見面，下個月約時間拜訪。',managerReply:'',managerReplyDate:''},
   {id:201,custId:2,date:'2026/05/14',dateVal:'2026-05-14',rep:'林美玲',acts:['📊 提案簡報','📄 正式報價'],quote:580000,note:'帶新版提案，林經理正面回應，已提交報價 NT$580,000，等待主管核准。',managerReply:'下次拜訪前電話確認主管顧慮，帶同業案例增加說服力。',managerReplyDate:'2026/05/14 18:00'},
   {id:202,custId:2,date:'2026/04/28',dateVal:'2026-04-28',rep:'林美玲',acts:['🚗 客戶拜訪'],quote:0,note:'第一次見面，採購林經理親切，表示有採購需求但預算還未確認。',managerReply:'',managerReplyDate:''},
   {id:301,custId:3,date:'2026/05/08',dateVal:'2026-05-08',rep:'陳志豪',acts:['🚗 客戶拜訪','📄 正式報價'],quote:120000,note:'初次現場拜訪，預算約10-15萬，已提交基礎方案報價 NT$120,000。',managerReply:'本週務必電話追蹤，不要讓他們冷掉。',managerReplyDate:'2026/05/09 10:00'},
@@ -410,70 +512,132 @@ var visitLogs = [
   {id:501,custId:5,date:'2026/05/02',dateVal:'2026-05-02',rep:'林美玲',acts:['✅ 成交簽約','🔄 售後追蹤'],quote:320000,note:'合約簽訂完成！交期確認為6月中，已安排工程師到場安裝。',managerReply:'確認合約交期，安排售後服務時間表。',managerReplyDate:'2026/05/03 08:45'},
   {id:502,custId:5,date:'2026/04/15',dateVal:'2026-04-15',rep:'林美玲',acts:['📄 正式報價'],quote:320000,note:'提交最終報價，對方要求折扣5%，協商後同意3%，等待簽約。',managerReply:'',managerReplyDate:''},
   {id:601,custId:6,date:'2026/03/15',dateVal:'2026-03-15',rep:'陳志豪',acts:['📄 正式報價'],quote:80000,note:'提交報價單 NT$80,000，對方說Q2再評估，之後沒有回音。',managerReply:'Q3可再主動聯絡探口風。',managerReplyDate:'2026/04/20 14:00'},
-  {id:701,custId:7,date:'2026/02/10',dateVal:'2026-02-10',rep:'王小明',acts:['🚗 客戶拜訪'],quote:0,note:'最後一次拜訪，得知客戶已選擇競品，主因是價格差距，結案。',managerReply:'記錄競品報價，下次投標調整策略。',managerReplyDate:'2026/03/15 16:00'}
+  {id:602,custId:6,date:'2026/02/20',dateVal:'2026-02-20',rep:'陳志豪',acts:['🚗 客戶拜訪','📊 提案簡報'],quote:0,note:'帶產品提案，採購林組長有興趣，要求提供報價。',managerReply:'',managerReplyDate:''},
+  {id:701,custId:7,date:'2026/02/10',dateVal:'2026-02-10',rep:'王小明',acts:['🚗 客戶拜訪'],quote:0,note:'最後一次拜訪，得知客戶已選擇競品，主因是價格差距，結案。',managerReply:'記錄競品報價，下次投標調整策略。',managerReplyDate:'2026/03/15 16:00'},
+  {id:702,custId:7,date:'2026/01/18',dateVal:'2026-01-18',rep:'王小明',acts:['📄 正式報價'],quote:200000,note:'提交報價 NT$200,000，對方同時評估3家廠商，競爭激烈。',managerReply:'',managerReplyDate:''}
 ];
 
-function esc(s){return String(s||'').replace(/[&<>"']/g,function(m){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[m];});}
+// ── Utils ──
+function esc(s){return String(s||'').replace(/[&<>"']/g,function(m){return{'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[m];});}
 function today0(){var d=new Date();d.setHours(0,0,0,0);return d;}
 function parseDateSafe(s){if(!s)return null;var d=new Date(String(s).replace(/\//g,'-'));if(isNaN(d.getTime()))return null;d.setHours(0,0,0,0);return d;}
 function daysDiff(s){var d=parseDateSafe(s);if(!d)return null;return Math.ceil((d-today0())/864e5);}
 function daysSince(s){var d=parseDateSafe(s);if(!d)return 9999;return Math.ceil((today0()-d)/864e5);}
 function fmtSlash(s){return String(s||'').replace(/-/g,'/');}
 function tsNow(){return new Date().toLocaleString('zh-TW',{hour12:false}).slice(0,-3);}
+function repNames(){return team.map(function(t){return t.name;});}
 
+// ── Login ──
+function selectLoginRole(r){
+  loginRole=r;
+  document.getElementById('role-opt-rep').classList.toggle('active',r==='rep');
+  document.getElementById('role-opt-manager').classList.toggle('active',r==='manager');
+}
+function doLogin(){
+  var name=document.getElementById('login-name').value.trim();
+  if(!name){document.getElementById('login-err').style.display='block';return;}
+  document.getElementById('login-err').style.display='none';
+  enterApp(name, loginRole==='manager');
+}
+document.getElementById('login-name').addEventListener('keydown',function(e){if(e.key==='Enter')doLogin();});
+function doLogout(){
+  document.getElementById('main-app').style.display='none';
+  document.getElementById('login-screen').style.display='flex';
+  document.getElementById('login-name').value='';
+  selectLoginRole('rep');
+}
+function enterApp(name,isManager){
+  currentUser=name;
+  role=isManager?'manager':'rep';
+  document.getElementById('sb-name').textContent=name;
+  document.getElementById('sb-av').textContent=name[0]||'U';
+  document.getElementById('sb-role').textContent=isManager?'主管':'業務';
+  var btns=document.querySelectorAll('.rb');
+  btns[0].classList.toggle('active',!isManager);btns[1].classList.toggle('active',isManager);
+  // 主管專屬 UI
+  document.getElementById('role-tog-wrap').style.display=isManager?'flex':'none';
+  document.getElementById('nav-settings').style.display=isManager?'flex':'none';
+  showRepBars(isManager);
+  document.getElementById('login-screen').style.display='none';
+  document.getElementById('main-app').style.display='flex';
+  // pre-fill rep dropdown with current user if they're a rep
+  renderFormOptions();
+  renderOverviewTable();
+  updOv();
+  // auto-select self in report form
+  var repSel=document.getElementById('r-rep');
+  for(var i=0;i<repSel.options.length;i++){if(repSel.options[i].text===name){repSel.selectedIndex=i;break;}}
+}
+
+// ── Team management ──
+function renderRepMgmt(){
+  var html=team.map(function(t,i){
+    return '<div class="rep-row"><div><div class="rep-row-name">'+esc(t.name)+'</div><div class="rep-row-role">'+(t.role==='manager'?'主管':'業務')+'</div></div>'
+      +'<button class="btn btn-d btn-sm" onclick="trigDelRep('+i+')">移除</button></div>';
+  }).join('');
+  var el=document.getElementById('rep-mgmt-list');
+  if(el)el.innerHTML=html||'<div style="color:var(--tx3);font-size:13px;padding:4px 0">尚無業務</div>';
+}
+function addRep(){
+  var name=document.getElementById('new-rep-name').value.trim();
+  if(!name){toast('⚠ 請輸入姓名');return;}
+  if(team.find(function(t){return t.name===name;})){toast('⚠ 此姓名已存在');return;}
+  var r=document.getElementById('new-rep-role').value;
+  team.push({name:name,role:r});
+  document.getElementById('new-rep-name').value='';
+  renderRepMgmt();renderFormOptions();
+  toast('✅ 已新增 '+name);
+}
+function trigDelRep(idx){
+  delRepIdx=idx;
+  document.getElementById('del-rep-name').textContent=team[idx].name+(team[idx].role==='manager'?' (主管)':' (業務)');
+  openMod('del-rep');
+}
+function confirmDelRep(){
+  if(delRepIdx===null)return;
+  var name=team[delRepIdx].name;
+  team.splice(delRepIdx,1);
+  delRepIdx=null;closeMod('del-rep');
+  renderRepMgmt();renderFormOptions();
+  toast('已移除 '+name);
+}
+
+// ── Customer helpers ──
 function fuUrgency(c){
   if(c.status==='dead')return 'dead';
   if(c.status==='frozen')return 'frozen';
   var d=daysDiff(c.fu);
   if(d===null)return 'none';
-  if(d<=3)return 'urgent';
-  if(d<=7)return 'soon';
-  return 'ok';
+  if(d<=3)return 'urgent';if(d<=7)return 'soon';return 'ok';
 }
 function fuLabel(c){
-  if(c.status==='dead')return {cls:'fp-none',txt:'已結案'};
-  if(c.status==='frozen')return {cls:'fp-frz',txt:'❄ 冷凍中'};
+  if(c.status==='dead')return{cls:'fp-none',txt:'已結案'};
+  if(c.status==='frozen')return{cls:'fp-frz',txt:'❄ 冷凍中'};
   var d=daysDiff(c.fu);
-  if(d===null)return {cls:'fp-none',txt:'未設定跟進'};
-  if(d<0)return {cls:'fp-urg',txt:'⚠ 逾期 '+Math.abs(d)+' 天'};
-  if(d===0)return {cls:'fp-urg',txt:'⚠ 今日跟進'};
-  if(d<=3)return {cls:'fp-urg',txt:'🔴 '+d+' 天後'};
-  if(d<=7)return {cls:'fp-soon',txt:'🟡 '+d+' 天後'};
-  return {cls:'fp-ok',txt:'🟢 '+fmtSlash(c.fu)};
+  if(d===null)return{cls:'fp-none',txt:'未設定跟進'};
+  if(d<0)return{cls:'fp-urg',txt:'⚠ 逾期 '+Math.abs(d)+' 天'};
+  if(d===0)return{cls:'fp-urg',txt:'⚠ 今日跟進'};
+  if(d<=3)return{cls:'fp-urg',txt:'🔴 '+d+' 天後'};
+  if(d<=7)return{cls:'fp-soon',txt:'🟡 '+d+' 天後'};
+  return{cls:'fp-ok',txt:'🟢 '+fmtSlash(c.fu)};
 }
-var gradeMap={
-  strategic:{cls:'b-strat',lbl:'長期戰略合作'},
-  partner:{cls:'b-part',lbl:'有望合作'},
-  prospect:{cls:'b-pros',lbl:'有望成交'},
-  tracking:{cls:'b-track',lbl:'持續追蹤'},
-  win:{cls:'b-win',lbl:'已成交'},
-  frozen:{cls:'b-frz',lbl:'冷凍中'},
-  dead:{cls:'b-dead',lbl:'已結案'}
-};
+var gradeMap={strategic:{cls:'b-strat',lbl:'長期戰略合作'},partner:{cls:'b-part',lbl:'有望合作'},prospect:{cls:'b-pros',lbl:'有望成交'},tracking:{cls:'b-track',lbl:'持續追蹤'},win:{cls:'b-win',lbl:'已成交'},frozen:{cls:'b-frz',lbl:'冷凍中'},dead:{cls:'b-dead',lbl:'已結案'}};
 function gInfo(g){return gradeMap[g]||gradeMap.tracking;}
 function custSortKey(c){
-  if(c.status==='dead')return 200;
-  if(c.status==='frozen')return 100;
-  var u=fuUrgency(c);
-  if(u==='urgent')return 0;
-  if(u==='soon')return 10;
-  var gw={strategic:1,partner:2,prospect:3,win:4,tracking:5}[c.grade]||5;
-  return 20+gw;
+  if(c.status==='dead')return 200;if(c.status==='frozen')return 100;
+  var u=fuUrgency(c);if(u==='urgent')return 0;if(u==='soon')return 10;
+  var gw={strategic:1,partner:2,prospect:3,win:4,tracking:5}[c.grade]||5;return 20+gw;
 }
 function autoFreeze(){
   custs.forEach(function(c){
     if(c.status!=='active'||!c.fu)return;
     var d=daysDiff(c.fu);
-    if(d!==null&&d<-14){
-      c.status='frozen';
-      c.frozenAt=new Date().toLocaleDateString('zh-TW');
-      c.frozenReason='系統自動標記：跟進日期已過 '+Math.abs(d)+' 天未更新';
-    }
+    if(d!==null&&d<-14){c.status='frozen';c.frozenAt=new Date().toLocaleDateString('zh-TW');c.frozenReason='系統自動標記：跟進日期已過 '+Math.abs(d)+' 天未更新';}
   });
 }
-function logsFor(custId){
-  return visitLogs.filter(function(v){return v.custId===custId;}).sort(function(a,b){return b.dateVal.localeCompare(a.dateVal);});
-}
+function logsFor(custId){return visitLogs.filter(function(v){return v.custId===custId;}).sort(function(a,b){return b.dateVal.localeCompare(a.dateVal);});}
+
+// ── Timeline ──
 function buildTimeline(custId,showAll,cid){
   var logs=logsFor(custId);
   if(!logs.length)return '<div style="font-size:12px;color:var(--tx3);padding:4px 0">尚無拜訪紀錄</div>';
@@ -481,20 +645,39 @@ function buildTimeline(custId,showAll,cid){
   var html=show.map(function(v,i){
     var replyH='';
     if(role==='manager'){
-      replyH='<div class="tl-reply"><div class="tl-reply-lbl">✏ 主管回覆</div><textarea class="tl-reply-input" onclick="event.stopPropagation()" onchange="updVlog('+v.id+',this.value)">'+esc(v.managerReply)+'</textarea>'+(v.managerReplyDate?'<div class="tl-reply-meta">'+esc(v.managerReplyDate)+'</div>':'')+'</div>';
+      // 主管回覆：textarea + 送出按鈕
+      replyH='<div class="tl-reply"><div class="tl-reply-lbl">✏ 主管回覆</div>'
+        +'<textarea class="tl-reply-input" id="tr-'+v.id+'" onclick="event.stopPropagation()">'+esc(v.managerReply)+'</textarea>'
+        +(v.managerReplyDate?'<div class="tl-reply-meta" id="trm-'+v.id+'">'+esc(v.managerReplyDate)+'</div>':'<div class="tl-reply-meta" id="trm-'+v.id+'"></div>')
+        +'<button class="reply-send-btn" onclick="event.stopPropagation();saveVlogReply('+v.id+')">送出回覆</button>'
+        +'</div>';
     }else if(v.managerReply){
       replyH='<div class="tl-reply"><div class="tl-reply-lbl">💬 主管建議</div><div class="tl-reply-txt">'+esc(v.managerReply)+'</div>'+(v.managerReplyDate?'<div class="tl-reply-meta">'+esc(v.managerReplyDate)+'</div>':'')+'</div>';
     }
-    return '<div class="tl-item"><div class="tl-spine"><div class="tl-dot'+(i===0?' latest':'')+'"></div>'+(i<show.length-1?'<div class="tl-line"></div>':'')+'</div><div class="tl-body"><div class="tl-meta">'+esc(v.date)+' &nbsp;·&nbsp; '+esc(v.rep)+'</div><div class="tl-acts">'+v.acts.map(function(a){return '<span class="atag">'+esc(a)+'</span>';}).join('')+'</div><div class="tl-note">'+esc(v.note)+'</div>'+(v.quote?'<div class="tl-quote">💰 報價：NT$'+v.quote.toLocaleString()+'</div>':'')+replyH+'</div></div>';
+    return '<div class="tl-item"><div class="tl-spine"><div class="tl-dot'+(i===0?' latest':'')+'"></div>'+(i<show.length-1?'<div class="tl-line"></div>':'')+'</div>'
+      +'<div class="tl-body"><div class="tl-meta">'+esc(v.date)+' &nbsp;·&nbsp; '+esc(v.rep)+'</div>'
+      +'<div class="tl-acts">'+v.acts.map(function(a){return'<span class="atag">'+esc(a)+'</span>';}).join('')+'</div>'
+      +'<div class="tl-note">'+esc(v.note)+'</div>'
+      +(v.quote?'<div class="tl-quote">💰 報價：NT$'+v.quote.toLocaleString()+'</div>':'')
+      +replyH+'</div></div>';
   }).join('');
   if(!showAll&&logs.length>2)html+='<button class="tl-more-btn" onclick="event.stopPropagation();expandTL('+custId+',\''+cid+'\')">顯示全部 '+logs.length+' 筆紀錄 ↓</button>';
   return html;
 }
 function expandTL(custId,cid){var el=document.getElementById(cid);if(el)el.innerHTML=buildTimeline(custId,true,cid);}
-function updVlog(id,val){var v=visitLogs.find(function(x){return x.id===id;});if(v){v.managerReply=val;v.managerReplyDate=tsNow();}toast('💬 主管回覆已儲存');}
+function saveVlogReply(id){
+  var v=visitLogs.find(function(x){return x.id===id;});
+  var ta=document.getElementById('tr-'+id);
+  if(!v||!ta)return;
+  v.managerReply=ta.value;v.managerReplyDate=tsNow();
+  var meta=document.getElementById('trm-'+id);
+  if(meta)meta.textContent=v.managerReplyDate;
+  toast('💬 主管回覆已送出');
+}
 
+// ── Render Customers ──
 function renderCusts(filter){
-  custFilt=filter;
+  custFilt=filter;autoFreeze();
   var list=custs.slice();
   if(role==='manager'&&custRepFilt!=='all')list=list.filter(function(c){return c.rep===custRepFilt;});
   if(filter==='active')list=list.filter(function(c){return c.status==='active';});
@@ -510,23 +693,52 @@ function renderCusts(filter){
     var g=gInfo(c.status==='dead'?'dead':c.status==='frozen'?'frozen':c.grade);
     var fu=fuLabel(c),urg=fuUrgency(c);
     var ccls=c.status==='dead'?'dead':c.status==='frozen'?'frz':urg==='urgent'?'urg':urg==='soon'?'soon':'ok';
-    var logCount=logsFor(c.id).length;
-    var tlCid='tl-c-'+c.id;
+    var logCount=logsFor(c.id).length,tlCid='tl-c-'+c.id;
+
     var banner='';
     if(c.status==='frozen')banner='<div class="status-banner sb-frz">❄ 冷凍中：'+esc(c.frozenReason)+'<span style="font-size:11px;opacity:.7">標記日：'+esc(c.frozenAt)+'</span></div>';
     if(c.status==='dead')banner='<div class="status-banner sb-dead">🗃 已結案：'+esc(c.deadReason)+'<span style="font-size:11px;opacity:.7">結案日：'+esc(c.deadAt)+'</span></div>';
 
-    var actions='';
-    if(c.status==='active')actions='<div class="action-row"><button class="btn btn-g btn-sm" onclick="event.stopPropagation();trigClose('+c.id+',\'frozen\')">❄ 標記冷凍</button><button class="btn btn-d btn-sm" onclick="event.stopPropagation();trigClose('+c.id+',\'dead\')">🗃 結案</button></div>';
-    else if(c.status==='frozen')actions='<div class="action-row"><button class="btn btn-s btn-sm" onclick="event.stopPropagation();reactivate('+c.id+')">↩ 恢復追蹤</button><button class="btn btn-d btn-sm" onclick="event.stopPropagation();trigClose('+c.id+',\'dead\')">🗃 正式結案</button></div>';
-    else actions='<div class="action-row"><button class="btn btn-s btn-sm" onclick="event.stopPropagation();reactivate('+c.id+')">↩ 重新追蹤</button></div>';
+    // 操作按鈕(所有人都能用，含刪除)
+    var actions='<div class="action-row">';
+    if(c.status==='active'){
+      actions+='<button class="btn btn-g btn-sm" onclick="event.stopPropagation();trigClose('+c.id+',\'frozen\')">❄ 標記冷凍</button>'
+        +'<button class="btn btn-d btn-sm" onclick="event.stopPropagation();trigClose('+c.id+',\'dead\')">🗃 結案</button>';
+    } else if(c.status==='frozen'){
+      // ← 重新激活按鈕(需求3)
+      actions+='<button class="btn btn-green btn-sm" onclick="event.stopPropagation();reactivate('+c.id+')">↩ 恢復追蹤</button>'
+        +'<button class="btn btn-d btn-sm" onclick="event.stopPropagation();trigClose('+c.id+',\'dead\')">🗃 正式結案</button>';
+    } else {
+      // 已結案也有重新激活(需求3)
+      actions+='<button class="btn btn-green btn-sm" onclick="event.stopPropagation();reactivate('+c.id+')">↩ 重新追蹤</button>';
+    }
+    // 刪除按鈕(需求1)— 主管業務都有
+    actions+='<button class="btn btn-d btn-sm" style="margin-left:auto" onclick="event.stopPropagation();trigDelCust('+c.id+')">🗑 刪除客戶</button>';
+    actions+='</div>';
 
     var replyH='';
-    if(role==='manager')replyH='<div class="rbox"><div class="rlbl">✏ 主管整體回覆</div><textarea class="rinput" onclick="event.stopPropagation()" onchange="updCustReply('+c.id+',this.value)">'+esc(c.reply)+'</textarea>'+(c.replyDate?'<div class="rmeta">'+esc(c.replyDate)+'</div>':'')+'</div>';
+    if(role==='manager')replyH='<div class="rbox"><div class="rlbl">✏ 主管整體回覆</div><textarea class="rinput" id="cr-'+c.id+'" onclick="event.stopPropagation()">'+esc(c.reply)+'</textarea>'+(c.replyDate?'<div class="rmeta">'+esc(c.replyDate)+'</div>':'')+'<button class="reply-send-btn" style="margin-top:7px" onclick="event.stopPropagation();saveCustReply('+c.id+')">送出回覆</button></div>';
     else if(c.reply)replyH='<div class="rbox"><div class="rlbl">💬 主管建議</div><div class="rtxt">'+esc(c.reply)+'</div><div class="rmeta">'+esc(c.replyDate)+'</div></div>';
 
-    var html='<div class="cc '+ccls+'" id="cc-'+c.id+'"><div class="cchdr" onclick="togCard('+c.id+')"><div class="cav" style="background:'+c.avBg+';color:'+c.avCo+'">'+esc(c.sh)+'</div><div class="cmain"><div class="cname">'+esc(c.name)+'</div><div class="cmeta">負責：'+esc(c.rep)+' · 共 '+logCount+' 次拜訪紀錄</div></div><div class="cright"><span class="fpill '+fu.cls+'">'+esc(fu.txt)+'</span><span class="badge '+g.cls+'">'+esc(g.lbl)+'</span><span class="chev" id="chev-'+c.id+'">▾</span></div></div><div class="cbody" id="cbody-'+c.id+'">'+banner+(c.status==='active'?'<div class="dg"><div><div class="dl">客戶分級</div><select class="fi" onchange="updGrade('+c.id+',this.value)">'+['strategic','partner','prospect','tracking','win'].map(function(gr){return '<option value="'+gr+'"'+(c.grade===gr?' selected':'')+'>'+gInfo(gr).lbl+'</option>';}).join('')+'</select></div><div><div class="dl">下次跟進日期</div><input type="date" class="fi" value="'+esc(c.fu)+'" onclick="event.stopPropagation()" onchange="updFu('+c.id+',this.value)"></div></div>':'')+'<div class="fg"><div class="dl">備註</div><textarea class="fi" rows="2" onclick="event.stopPropagation()" onchange="updNote('+c.id+',this.value)">'+esc(c.note)+'</textarea></div>'+replyH+actions+'<div class="tl-wrap"><div class="tl-hdr"><div class="tl-title">拜訪紀錄時間軸</div><div class="tl-count">共 '+logCount+' 筆</div></div><div id="'+tlCid+'">'+buildTimeline(c.id,false,tlCid)+'</div></div></div></div>';
-    if(c.status==='active')activeH+=html;else if(c.status==='frozen')frozenH+=html;else deadH+=html;
+    var html='<div class="cc '+ccls+'" id="cc-'+c.id+'">'
+      +'<div class="cchdr" onclick="togCard('+c.id+')">'
+      +'<div class="cav" style="background:'+c.avBg+';color:'+c.avCo+'">'+esc(c.sh)+'</div>'
+      +'<div class="cmain"><div class="cname">'+esc(c.name)+'</div><div class="cmeta">負責：'+esc(c.rep)+' · 共 '+logCount+' 次拜訪紀錄</div></div>'
+      +'<div class="cright"><span class="fpill '+fu.cls+'">'+esc(fu.txt)+'</span><span class="badge '+g.cls+'">'+esc(g.lbl)+'</span><span class="chev" id="chev-'+c.id+'">▾</span></div>'
+      +'</div>'
+      +'<div class="cbody" id="cbody-'+c.id+'">'
+      +banner
+      +(c.status==='active'
+        ?'<div class="dg"><div><div class="dl">客戶分級</div><select class="fi" onchange="updGrade('+c.id+',this.value)">'+['strategic','partner','prospect','tracking','win'].map(function(gr){return'<option value="'+gr+'"'+(c.grade===gr?' selected':'')+'>'+gInfo(gr).lbl+'</option>';}).join('')+'</select></div>'
+          +'<div><div class="dl">下次跟進日期</div><input type="date" class="fi" value="'+esc(c.fu)+'" onclick="event.stopPropagation()" onchange="updFu('+c.id+',this.value)"></div></div>':'')
+      +'<div class="fg"><div class="dl">備註</div><textarea class="fi" rows="2" onclick="event.stopPropagation()" onchange="updNote('+c.id+',this.value)">'+esc(c.note)+'</textarea></div>'
+      +replyH+actions
+      +'<div class="tl-wrap"><div class="tl-hdr"><div class="tl-title">拜訪紀錄時間軸</div><div class="tl-count">共 '+logCount+' 筆</div></div><div id="'+tlCid+'">'+buildTimeline(c.id,false,tlCid)+'</div></div>'
+      +'</div></div>';
+
+    if(c.status==='active')activeH+=html;
+    else if(c.status==='frozen')frozenH+=html;
+    else deadH+=html;
   });
 
   var out='';
@@ -535,20 +747,43 @@ function renderCusts(filter){
   if(deadH&&(filter==='all'||filter==='dead'))out+=(filter==='all'?'<div class="sdiv">已結案</div>':'')+deadH;
   document.getElementById('cust-list').innerHTML=out||'<div style="padding:24px;text-align:center;color:var(--tx3);font-size:13px">此分類暫無客戶</div>';
 }
+
 function togCard(id){var b=document.getElementById('cbody-'+id),ch=document.getElementById('chev-'+id);var o=b.classList.contains('open');b.classList.toggle('open',!o);ch.classList.toggle('open',!o);}
 function updGrade(id,v){var c=custs.find(function(x){return x.id===id;});if(c)c.grade=v;toast('✅ 分級已更新');}
 function updFu(id,v){var c=custs.find(function(x){return x.id===id;});if(c){c.fu=v;renderCusts(custFilt);}toast('📅 跟進日期已更新');}
 function updNote(id,v){var c=custs.find(function(x){return x.id===id;});if(c)c.note=v;}
-function updCustReply(id,v){var c=custs.find(function(x){return x.id===id;});if(c){c.reply=v;c.replyDate=tsNow();}toast('💬 主管回覆已儲存');}
+function saveCustReply(id){
+  var c=custs.find(function(x){return x.id===id;});
+  var ta=document.getElementById('cr-'+id);
+  if(!c||!ta)return;
+  c.reply=ta.value;c.replyDate=tsNow();
+  toast('💬 主管回覆已送出');
+}
 
+// ── Delete Customer (需求1) ──
+function trigDelCust(id){
+  delCustId=id;
+  var c=custs.find(function(x){return x.id===id;});
+  document.getElementById('del-cust-name').textContent=c?c.name:'';
+  openMod('del-cust');
+}
+function confirmDelCust(){
+  if(!delCustId)return;
+  custs=custs.filter(function(c){return c.id!==delCustId;});
+  visitLogs=visitLogs.filter(function(v){return v.custId!==delCustId;});
+  delCustId=null;closeMod('del-cust');
+  renderCusts(custFilt);renderFormOptions();
+  toast('🗑 客戶已刪除');
+}
+
+// ── Close / Freeze / Reactivate ──
 function trigClose(id,type){
   closingId=id;closingType=type;
   var c=custs.find(function(x){return x.id===id;});
   document.getElementById('close-title').textContent=(type==='dead'?'結案：':'標記冷凍：')+c.name;
   var chips=type==='frozen'?['客戶暫緩','聯絡中斷','等待時機','其他']:['輸單','預算凍結','客戶暫緩','聯絡中斷','需求取消','其他'];
-  document.getElementById('cr-chips').innerHTML=chips.map(function(t){return '<button class="crchip" onclick="selReason(this)">'+t+'</button>';}).join('');
-  document.getElementById('close-note').value='';
-  openMod('close');
+  document.getElementById('cr-chips').innerHTML=chips.map(function(t){return'<button class="crchip" onclick="selReason(this)">'+t+'</button>';}).join('');
+  document.getElementById('close-note').value='';openMod('close');
 }
 function selReason(btn){document.querySelectorAll('.crchip').forEach(function(b){b.classList.remove('active');});btn.classList.add('active');}
 function doClose(){
@@ -558,14 +793,16 @@ function doClose(){
   var td=new Date().toLocaleDateString('zh-TW');
   if(closingType==='dead'){c.status='dead';c.deadAt=td;c.deadReason=reason;toast('🗃 已結案，資料完整保留');}
   else{c.status='frozen';c.frozenAt=td;c.frozenReason=reason;toast('❄ 已標記冷凍');}
-  closeMod('close');renderCusts(custFilt);renderReportOptions();
+  closeMod('close');renderCusts(custFilt);renderFormOptions();
 }
+// 重新激活(需求3)— 主管業務都可以
 function reactivate(id){
   var c=custs.find(function(x){return x.id===id;});
   if(c){c.status='active';delete c.frozenAt;delete c.frozenReason;delete c.deadAt;delete c.deadReason;}
-  toast('↩ 已恢復追蹤');renderCusts(custFilt);renderReportOptions();
+  toast('↩ 已恢復追蹤，可繼續拜訪');renderCusts(custFilt);renderFormOptions();
 }
 
+// ── History ──
 function repStaleness(custId){var logs=logsFor(custId);if(!logs.length)return 9999;return daysSince(logs[0].dateVal);}
 function renderHist(){
   var shown=custs.slice();
@@ -579,44 +816,49 @@ function renderHist(){
     else if(stale>=30){pCls='pri-crit';pTxt='⚠ 超過 '+stale+' 天未更新 — 需立即確認';}
     else if(stale>=14){pCls='pri-warn';pTxt='🟡 '+stale+' 天未更新，請跟進';}
     else{pCls='pri-ok';pTxt='🟢 '+stale+' 天前回報';}
-    if(!isDead&&!openDiv){html+='<div class="sdiv">進行中（最久未跟進優先）</div>';openDiv=true;}
+    if(!isDead&&!openDiv){html+='<div class="sdiv">進行中(最久未跟進優先)</div>';openDiv=true;}
     if(isDead&&!doneDiv){html+='<div class="sdiv">已結案</div>';doneDiv=true;}
     var tlCid='tl-h-'+c.id;
-    html+='<div class="ri"><div class="pri-bar '+pCls+'">'+pTxt+'</div><div class="ri-hdr"><span class="ri-date">最後回報：'+esc(latestLog.date)+'</span><span class="ri-rep">'+esc(c.rep)+'</span><span class="ri-cust">→ '+esc(c.name)+'</span><span style="flex:1"></span>'+(isDead?'<span class="badge b-dead">已結案</span>':'')+'</div><div class="tl-wrap" style="margin-top:0;border-top:none;padding-top:0"><div class="tl-hdr"><div class="tl-title">拜訪紀錄</div><div class="tl-count">共 '+logs.length+' 筆</div></div><div id="'+tlCid+'">'+buildTimeline(c.id,false,tlCid)+'</div></div></div>';
+    html+='<div class="ri"><div class="pri-bar '+pCls+'">'+pTxt+'</div>'
+      +'<div class="ri-hdr"><span class="ri-date">最後回報：'+esc(latestLog.date)+'</span><span class="ri-rep">'+esc(c.rep)+'</span><span class="ri-cust">→ '+esc(c.name)+'</span><span style="flex:1"></span>'+(isDead?'<span class="badge b-dead">已結案</span>':'')+'</div>'
+      +'<div class="tl-wrap" style="margin-top:0;border-top:none;padding-top:0"><div class="tl-hdr"><div class="tl-title">拜訪紀錄</div><div class="tl-count">共 '+logs.length+' 筆</div></div><div id="'+tlCid+'">'+buildTimeline(c.id,false,tlCid)+'</div></div>'
+      +'</div>';
   });
   document.getElementById('hist-list').innerHTML=html||'<div style="padding:24px;text-align:center;color:var(--tx3)">暫無紀錄</div>';
 }
 
+// ── Report Form ──
 function submitRep(){
   var custName=document.getElementById('r-cust').value;
   var c=custs.find(function(x){return x.name===custName;});
   if(!custName){toast('⚠ 請選擇客戶');return;}
   if(!c){toast('⚠ 找不到對應客戶');return;}
   var selectedActs=Array.from(document.querySelectorAll('.achip.active')).map(function(b){return b.textContent;});
-  if(selectedActs.length===0){toast('⚠ 請至少選擇一個活動');return;}
+  if(!selectedActs.length){toast('⚠ 請至少選擇一個活動');return;}
   var inputDate=document.getElementById('r-date').value||new Date().toISOString().slice(0,10);
   var qRaw=document.getElementById('r-quote').value.replace(/[^0-9]/g,'');
-  var newLog={id:Date.now(),custId:c.id,date:fmtSlash(inputDate),dateVal:inputDate,rep:document.getElementById('r-rep').value,acts:selectedActs,note:document.getElementById('r-note').value||'（無備註）',quote:qRaw?parseInt(qRaw,10):0,managerReply:'',managerReplyDate:''};
-  visitLogs.unshift(newLog);
-  var nextFu=document.getElementById('r-fu').value;
-  if(nextFu)c.fu=nextFu;
+  visitLogs.unshift({id:Date.now(),custId:c.id,date:fmtSlash(inputDate),dateVal:inputDate,rep:document.getElementById('r-rep').value,acts:selectedActs,note:document.getElementById('r-note').value||'(無備註)',quote:qRaw?parseInt(qRaw,10):0,managerReply:'',managerReplyDate:''});
+  var nextFu=document.getElementById('r-fu').value;if(nextFu)c.fu=nextFu;
   document.querySelectorAll('.achip.active').forEach(function(b){b.classList.remove('active');});
-  document.getElementById('r-note').value='';
-  document.getElementById('r-quote').value='';
+  document.getElementById('r-note').value='';document.getElementById('r-quote').value='';
   toast('✅ 回報已送出！');
-  renderOverviewTable();
   setTimeout(function(){goPage('history',document.querySelectorAll('.ni')[3]);},600);
 }
+
+// ── Add Customer ──
 function addCustomer(){
   var name=document.getElementById('add-name').value.trim();
   if(!name){toast('⚠ 請輸入公司名稱');return;}
   var sh=document.getElementById('add-sh').value.trim()||name.slice(0,2);
-  var newC={id:Date.now(),name:name,sh:sh,rep:document.getElementById('add-rep').value,grade:document.getElementById('add-grade').value,status:'active',fu:document.getElementById('add-fu').value||'',note:'',reply:'',replyDate:'',avBg:'var(--surf2)',avCo:'var(--tx2)'};
-  custs.push(newC);
+  var colors=[['var(--purple-l)','var(--purple)'],['var(--green-l)','var(--green)'],['var(--amber-l)','var(--amber)'],['var(--blue-l)','var(--blue)']];
+  var ci=custs.length%colors.length;
+  custs.push({id:Date.now(),name:name,sh:sh,rep:document.getElementById('add-rep').value,grade:document.getElementById('add-grade').value,status:'active',fu:document.getElementById('add-fu').value||'',note:'',reply:'',replyDate:'',avBg:colors[ci][0],avCo:colors[ci][1]});
   ['add-name','add-sh','add-fu'].forEach(function(id){document.getElementById(id).value='';});
-  closeMod('add');renderReportOptions();if(curPage==='customers')renderCusts(custFilt);toast('✅ 客戶已新增');
+  closeMod('add');renderFormOptions();if(curPage==='customers')renderCusts(custFilt);
+  toast('✅ 客戶已新增');
 }
 
+// ── Overview ──
 function chMo(d){moIdx=Math.max(0,Math.min(11,moIdx+d));document.getElementById('cur-mo').textContent='2026年 '+mos[moIdx];updOv();}
 function updOv(data){
   var d=data||moData[moIdx]||{v:0,q:0,c:0};
@@ -626,30 +868,52 @@ function updOv(data){
 function setBar(k,w,n){document.getElementById('fb-'+k).style.width=w+'%';document.getElementById('fb-'+k).textContent=n+'次';document.getElementById('fn-'+k).textContent=n;}
 function ovFilter(rep){var m={'all':{v:12,q:6,c:2},'王小明':{v:5,q:3,c:1},'林美玲':{v:4,q:2,c:1},'陳志豪':{v:3,q:1,c:0}};updOv(m[rep]||{v:0,q:0,c:0});}
 function renderOverviewTable(){
-  var rows=[
-    ['王小明',5,3,1,240000,'20%','ra','王','var(--purple-l)','var(--purple)'],
-    ['林美玲',4,2,1,180000,'25%','rg','林','var(--green-l)','var(--green)'],
-    ['陳志豪',3,1,0,0,'0%','rr','陳','var(--amber-l)','var(--amber)']
-  ];
-  document.getElementById('rep-table-body').innerHTML=rows.map(function(r){
-    return '<tr><td><div style="display:flex;align-items:center;gap:7px"><div style="width:26px;height:26px;border-radius:7px;background:'+r[8]+';color:'+r[9]+';display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:600">'+r[7]+'</div>'+r[0]+'</div></td><td>'+r[1]+'</td><td>'+r[2]+'</td><td>'+r[3]+'</td><td class="mono">$'+r[4].toLocaleString()+'</td><td><span class="mono '+r[6]+'">'+r[5]+'</span></td></tr>';
-  }).join('');
+  var rows=[['王小明',5,3,1,240000,'20%','ra','王','var(--purple-l)','var(--purple)'],['林美玲',4,2,1,180000,'25%','rg','林','var(--green-l)','var(--green)'],['陳志豪',3,1,0,0,'0%','rr','陳','var(--amber-l)','var(--amber)']];
+  document.getElementById('rep-table-body').innerHTML=rows.map(function(r){return'<tr><td><div style="display:flex;align-items:center;gap:7px"><div style="width:26px;height:26px;border-radius:7px;background:'+r[8]+';color:'+r[9]+';display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:600">'+r[7]+'</div>'+r[0]+'</div></td><td>'+r[1]+'</td><td>'+r[2]+'</td><td>'+r[3]+'</td><td class="mono">$'+r[4].toLocaleString()+'</td><td><span class="mono '+r[6]+'">'+r[5]+'</span></td></tr>';}).join('');
 }
 
+// ── Form options (業務下拉、客戶下拉 動態同步) ──
+function renderFormOptions(){
+  // 業務下拉
+  var names=repNames();
+  ['r-rep','add-rep'].forEach(function(sid){
+    var sel=document.getElementById(sid);if(!sel)return;
+    var prev=sel.value;
+    sel.innerHTML=names.map(function(n){return'<option>'+esc(n)+'</option>';}).join('');
+    if(names.indexOf(prev)>-1)sel.value=prev;
+  });
+  // 客戶下拉(排除已結案)
+  var sel=document.getElementById('r-cust');
+  if(sel){
+    var prev=sel.value;
+    sel.innerHTML='<option value="">選擇客戶…</option>'+custs.filter(function(c){return c.status!=='dead';}).map(function(c){return'<option>'+esc(c.name)+'</option>';}).join('');
+    if(prev)sel.value=prev;
+  }
+  // 業務篩選按鈕(客戶管理 & 回報紀錄)
+  ['cust-rep-chips','hist-rep-chips'].forEach(function(cid){
+    var el=document.getElementById(cid);if(!el)return;
+    el.innerHTML='<button class="fchip active" onclick="'+(cid==='cust-rep-chips'?'filtCustRep':'filtHistRep')+'(\'all\',this)">全部業務</button>'
+      +names.map(function(n){return'<button class="fchip" onclick="'+(cid==='cust-rep-chips'?'filtCustRep':'filtHistRep')+'(\''+n+'\',this)">'+esc(n)+'</button>';}).join('');
+  });
+  // 月度總覽業務下拉
+  var ovSel=document.getElementById('ov-filter-sel');
+  if(ovSel){ovSel.innerHTML='<option value="all">全部業務</option>'+names.map(function(n){return'<option value="'+esc(n)+'">'+esc(n)+'</option>';}).join('');}
+}
+
+// ── Nav ──
 function goPage(p,btn){
-  ['overview','customers','report-form','history'].forEach(function(n){document.getElementById('pg-'+n).style.display=n===p?'':'none';});
+  ['overview','customers','report-form','history','settings'].forEach(function(n){document.getElementById('pg-'+n).style.display=n===p?'':'none';});
   document.querySelectorAll('.ni').forEach(function(b){b.classList.remove('active');});
   if(btn)btn.classList.add('active');
   curPage=p;
-  document.getElementById('tb-title').textContent={overview:'月度總覽',customers:'客戶管理','report-form':'每日回報',history:'回報紀錄'}[p]||'';
-  if(p==='customers')renderCusts(custFilt);
+  document.getElementById('tb-title').textContent={overview:'月度總覽',customers:'客戶管理','report-form':'每日回報',history:'回報紀錄',settings:'系統設定'}[p]||'';
+  if(p==='customers'){autoFreeze();renderCusts(custFilt);}
   if(p==='history')renderHist();
+  if(p==='settings')renderRepMgmt();
 }
 function setRole(r,btn){
   role=r;
   document.querySelectorAll('.rb').forEach(function(b){b.classList.remove('active');});btn.classList.add('active');
-  if(r==='manager'){document.getElementById('sb-name').textContent='陳總經理';document.getElementById('sb-av').textContent='陳';document.getElementById('sb-role').textContent='主管';}
-  else{document.getElementById('sb-name').textContent='王小明';document.getElementById('sb-av').textContent='王';document.getElementById('sb-role').textContent='業務';custRepFilt='all';histRepFilt='all';}
   showRepBars(r==='manager');
   if(curPage==='customers')renderCusts(custFilt);
   if(curPage==='history')renderHist();
@@ -659,43 +923,16 @@ function filtCustRep(rep,btn){custRepFilt=rep;document.querySelectorAll('#cust-r
 function filtHistRep(rep,btn){histRepFilt=rep;document.querySelectorAll('#hist-rep-chips .fchip').forEach(function(b){b.classList.remove('active');});btn.classList.add('active');renderHist();}
 function showRepBars(isM){var cb=document.getElementById('cust-rep-bar'),hb=document.getElementById('hist-rep-bar');if(cb)cb.classList.toggle('show',isM);if(hb)hb.classList.toggle('show',isM);}
 
+// ── Modal / Toast ──
 function openMod(n){document.getElementById('mod-'+n).classList.add('open');}
 function closeMod(n){document.getElementById('mod-'+n).classList.remove('open');}
 function toast(msg){var t=document.getElementById('toast-el');t.textContent=msg;t.classList.add('show');setTimeout(function(){t.classList.remove('show');},2400);}
 
-function initGoogle(){
-  if(typeof google==='undefined'){setTimeout(initGoogle,300);return;}
-  google.accounts.id.initialize({client_id:GOOGLE_CLIENT_ID,callback:handleCred,hd:ALLOWED_DOMAIN});
-  google.accounts.id.renderButton(document.getElementById('g-btn'),{theme:'outline',size:'large',text:'signin_with',locale:'zh-TW',width:280});
-}
-function handleCred(response){
-  var p=JSON.parse(atob(response.credential.split('.')[1]));
-  if((p.email||'').split('@')[1]!==ALLOWED_DOMAIN){document.getElementById('login-err').style.display='block';return;}
-  var isM=p.email.startsWith('manager')||p.email.startsWith('boss');
-  enterApp(p.name||p.email,isM);
-}
-function devLogin(r){enterApp(r==='manager'?'陳總經理':'王小明',r==='manager');}
-function enterApp(name,isManager){
-  document.getElementById('sb-name').textContent=name;
-  document.getElementById('sb-av').textContent=name[0]||'U';
-  document.getElementById('sb-role').textContent=isManager?'主管':'業務';
-  role=isManager?'manager':'rep';
-  var btns=document.querySelectorAll('.rb');
-  btns[0].classList.toggle('active',!isManager);btns[1].classList.toggle('active',isManager);
-  showRepBars(isManager);
-  document.getElementById('login-screen').style.display='none';
-  document.getElementById('main-app').style.display='flex';
-}
-
-function renderReportOptions(){
-  var sel=document.getElementById('r-cust');
-  sel.innerHTML='<option value="">選擇客戶…</option>'+custs.filter(function(c){return c.status!=='dead';}).map(function(c){return '<option>'+esc(c.name)+'</option>';}).join('');
-}
+// ── Init ──
 document.getElementById('r-date').valueAsDate=new Date();
-renderReportOptions();
+renderFormOptions();
 renderOverviewTable();
-showRepBars(true);
-if(GOOGLE_CLIENT_ID!=='YOUR_CLIENT_ID.apps.googleusercontent.com')initGoogle();
+updOv();
 </script>
 </body>
 </html>
