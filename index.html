@@ -1,0 +1,475 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>業務回報系統</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#F7F6F2;--su:#fff;--su2:#F0EFE9;--bd:#E2E0D8;--bds:#C8C5B8;--tx:#1A1916;--tx2:#6B6860;--tx3:#9E9C97;--ac:#2B4EFF;--acl:#EEF1FF;--gn:#1A7F5A;--gnl:#E8F7F1;--am:#B45309;--aml:#FEF3C7;--pu:#5B21B6;--pul:#EDE9FE;--rd:#B91C1C;--rdl:#FEE2E2;--bl:#1D4ED8;--bll:#DBEAFE;--gr:#888780;--grl:#F1EFE8;--r:10px;--rlg:14px;--sh:0 1px 3px rgba(0,0,0,.06),0 1px 2px rgba(0,0,0,.04)}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Noto Sans TC',sans-serif;background:var(--bg);color:var(--tx);min-height:100vh;font-size:14px}
+#ls{position:fixed;inset:0;z-index:9999;background:var(--bg);display:flex;align-items:center;justify-content:center}
+.lc{background:var(--su);border:1px solid var(--bd);border-radius:18px;padding:44px 40px 36px;width:360px;text-align:center;box-shadow:0 4px 24px rgba(0,0,0,.07)}
+.lm{font-family:'DM Mono',monospace;font-size:10px;letter-spacing:.14em;color:var(--tx3);text-transform:uppercase;margin-bottom:6px}
+.lc h1{font-size:22px;font-weight:600;letter-spacing:-.03em;margin-bottom:8px}
+.lc p{font-size:13px;color:var(--tx2);margin-bottom:28px;line-height:1.5}
+.lc .nt{font-size:11px;color:var(--tx3);margin-top:18px;line-height:1.5}
+#le{background:var(--rdl);border:1px solid #FECACA;border-radius:8px;padding:10px 14px;font-size:13px;color:var(--rd);margin-bottom:14px;display:none}
+#gsb{display:flex;justify-content:center}
+.db{margin-top:8px;width:100%;padding:9px;border:1px dashed var(--bds);border-radius:var(--r);background:none;cursor:pointer;font-size:13px;color:var(--tx2);font-family:'Noto Sans TC',sans-serif}
+.db:hover{background:var(--su2)}
+.app{display:flex;min-height:100vh}
+.sb{width:220px;background:var(--su);border-right:1px solid var(--bd);display:flex;flex-direction:column;position:fixed;height:100vh;z-index:10}
+.sbl{padding:20px 20px 16px;border-bottom:1px solid var(--bd)}
+.sbl h1{font-size:15px;font-weight:600;letter-spacing:-.02em;margin-top:2px}
+.sbn{flex:1;padding:10px}
+.nsc{font-size:10px;font-weight:600;letter-spacing:.1em;color:var(--tx3);text-transform:uppercase;padding:10px 10px 4px}
+.ni{display:flex;align-items:center;gap:8px;padding:9px 10px;border-radius:var(--r);cursor:pointer;color:var(--tx2);font-size:13px;transition:all .15s;border:none;background:none;width:100%;text-align:left;margin-bottom:1px;font-family:'Noto Sans TC',sans-serif}
+.ni:hover{background:var(--su2);color:var(--tx)}
+.ni.active{background:var(--tx);color:#fff}
+.sbu{padding:14px 16px;border-top:1px solid var(--bd);display:flex;align-items:center;gap:10px}
+.av{width:32px;height:32px;border-radius:50%;background:var(--tx);color:#fff;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:600;flex-shrink:0}
+.un{font-size:13px;font-weight:500}.ur{font-size:11px;color:var(--tx3)}
+.mn{margin-left:220px;flex:1;min-width:0}
+.tb{height:56px;background:var(--su);border-bottom:1px solid var(--bd);display:flex;align-items:center;padding:0 22px;gap:10px;position:sticky;top:0;z-index:5}
+.tbt{font-size:15px;font-weight:600;letter-spacing:-.02em;flex:1}
+.rt{display:flex;background:var(--su2);border:1px solid var(--bd);border-radius:var(--r);padding:3px}
+.rb{padding:5px 13px;border-radius:8px;border:none;background:none;cursor:pointer;font-size:12px;font-weight:500;color:var(--tx2);transition:all .15s;font-family:'Noto Sans TC',sans-serif}
+.rb.active{background:var(--su);color:var(--tx);box-shadow:var(--sh)}
+.ms{display:flex;align-items:center;gap:5px;background:var(--su2);border:1px solid var(--bd);border-radius:var(--r);padding:4px 9px}
+.mb{border:none;background:none;cursor:pointer;color:var(--tx2);font-size:14px;width:20px;height:20px;display:flex;align-items:center;justify-content:center;border-radius:5px}
+.mb:hover{background:var(--bd)}
+#cm{font-size:13px;font-weight:500;min-width:68px;text-align:center}
+.ct{padding:22px}
+.mg{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:22px}
+.mc{background:var(--su);border:1px solid var(--bd);border-radius:var(--rlg);padding:15px 17px;box-shadow:var(--sh)}
+.mc.hi{border-color:var(--ac);background:var(--acl)}
+.mt{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:9px}
+.ml{font-size:12px;color:var(--tx2);font-weight:500}
+.mi{width:27px;height:27px;border-radius:7px;display:flex;align-items:center;justify-content:center;font-size:13px}
+.mv{font-size:27px;font-weight:600;letter-spacing:-.03em;line-height:1}
+.ms2{font-size:11px;color:var(--tx3);margin-top:3px}
+.fw{background:var(--su);border:1px solid var(--bd);border-radius:var(--rlg);padding:17px;margin-bottom:22px;box-shadow:var(--sh)}
+.fh{display:flex;justify-content:space-between;align-items:center;margin-bottom:13px}
+.sl{font-size:13px;font-weight:600}
+.fr{display:flex;align-items:center;gap:10px;margin-bottom:8px}
+.ft{font-size:12px;color:var(--tx2);width:34px;text-align:right;flex-shrink:0}
+.fbg{flex:1;background:var(--su2);border-radius:5px;height:23px;overflow:hidden}
+.fb{height:100%;border-radius:5px;display:flex;align-items:center;padding-left:9px;font-size:11px;font-weight:500;transition:width .5s ease;white-space:nowrap}
+.fn{font-size:12px;color:var(--tx2);width:22px;text-align:right;flex-shrink:0;font-family:'DM Mono',monospace}
+.rw{background:var(--su);border:1px solid var(--bd);border-radius:var(--rlg);overflow:hidden;box-shadow:var(--sh)}
+.rt2{width:100%;border-collapse:collapse;font-size:13px}
+.rt2 th{padding:9px 14px;text-align:left;font-size:11px;font-weight:600;color:var(--tx3);letter-spacing:.05em;text-transform:uppercase;border-bottom:1px solid var(--bd);background:var(--su2)}
+.rt2 td{padding:10px 14px;border-bottom:1px solid var(--bd)}
+.rt2 tr:last-child td{border-bottom:none}
+.rt2 tr:hover td{background:var(--su2)}
+.mo{font-family:'DM Mono',monospace}
+.rg{color:var(--gn)}.rm{color:var(--am)}.rl{color:var(--rd)}
+.lh{display:flex;align-items:center;justify-content:space-between;margin-bottom:13px}
+.fc{display:flex;gap:5px;flex-wrap:wrap;margin-bottom:16px}
+.fp{padding:4px 11px;border-radius:20px;font-size:12px;font-weight:500;border:1px solid var(--bd);cursor:pointer;background:none;color:var(--tx2);transition:all .15s;font-family:'Noto Sans TC',sans-serif}
+.fp:hover{background:var(--su2)}
+.fp.active{background:var(--tx);color:#fff;border-color:var(--tx)}
+.cl{display:flex;flex-direction:column;gap:8px}
+.cc{background:var(--su);border:1px solid var(--bd);border-radius:var(--rlg);overflow:hidden;box-shadow:var(--sh);transition:border-color .15s}
+.cc:hover{border-color:var(--bds)}
+.cc.ug{border-left:3px solid var(--rd)}
+.cc.sn{border-left:3px solid var(--am)}
+.cc.ok{border-left:3px solid var(--gn)}
+.cc.fz{border-left:3px solid var(--gr);opacity:.72}
+.cc.dd{border-left:3px solid #ccc;opacity:.52}
+.ch{display:flex;align-items:center;gap:10px;padding:12px 14px;cursor:pointer}
+.ca{width:38px;height:38px;border-radius:9px;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:600;flex-shrink:0}
+.cm2{flex:1;min-width:0}
+.cn{font-size:14px;font-weight:600}
+.cme{font-size:12px;color:var(--tx2);margin-top:1px}
+.cr{display:flex;align-items:center;gap:6px;flex-shrink:0}
+.bg{display:inline-flex;align-items:center;padding:2px 9px;border-radius:20px;font-size:11px;font-weight:600;white-space:nowrap}
+.bg-s{background:var(--pul);color:var(--pu)}
+.bg-p{background:var(--gnl);color:var(--gn)}
+.bg-q{background:var(--aml);color:var(--am)}
+.bg-t{background:var(--su2);color:var(--tx2)}
+.bg-w{background:var(--bll);color:var(--bl)}
+.bg-f{background:var(--grl);color:var(--gr)}
+.bg-d{background:#eee;color:#999}
+.fp2{display:inline-flex;align-items:center;gap:4px;padding:3px 9px;border-radius:20px;font-size:11px;font-weight:500;white-space:nowrap}
+.fp2.ug{background:var(--rdl);color:var(--rd)}
+.fp2.sn{background:var(--aml);color:var(--am)}
+.fp2.ok{background:var(--gnl);color:var(--gn)}
+.fp2.no,.fp2.fz2,.fp2.dd2{background:var(--su2);color:var(--tx3)}
+.cv{font-size:13px;color:var(--tx3);transition:transform .2s;flex-shrink:0}
+.cv.op{transform:rotate(180deg)}
+.cb{display:none;border-top:1px solid var(--bd);padding:13px;background:#FAFAF8}
+.cb.op{display:block}
+.dg{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:11px}
+.dl{font-size:10px;color:var(--tx3);font-weight:600;letter-spacing:.05em;text-transform:uppercase;margin-bottom:3px}
+.dv{font-size:13px}
+.fg{margin-bottom:10px}
+.fi{width:100%;padding:7px 9px;border:1px solid var(--bd);border-radius:var(--r);font-size:13px;font-family:'Noto Sans TC',sans-serif;background:var(--su);color:var(--tx);outline:none}
+.fi:focus{border-color:var(--ac)}
+textarea.fi{resize:vertical}
+.fzb{background:var(--grl);border-radius:8px;padding:8px 11px;font-size:12px;color:var(--gr);margin-bottom:10px;line-height:1.6}
+.ddb{background:#f5f5f5;border-radius:8px;padding:8px 11px;font-size:12px;color:#aaa;margin-bottom:10px;line-height:1.6}
+.rpb{background:var(--acl);border:1px solid #C7D0FF;border-radius:var(--r);padding:10px 12px;margin-top:10px}
+.rpl{font-size:10px;font-weight:600;color:var(--ac);letter-spacing:.05em;text-transform:uppercase;margin-bottom:5px}
+.rpt{font-size:13px;color:var(--bl);line-height:1.6}
+.rpm{font-size:11px;color:#6B7BE8;margin-top:3px}
+.rpi{width:100%;padding:7px 9px;border:1px solid #C7D0FF;border-radius:var(--r);font-size:13px;font-family:'Noto Sans TC',sans-serif;background:var(--su);color:var(--tx);outline:none;resize:vertical;min-height:56px}
+.rpi:focus{border-color:var(--ac)}
+.btn{display:inline-flex;align-items:center;gap:5px;padding:7px 14px;border-radius:var(--r);font-size:13px;font-weight:500;cursor:pointer;transition:all .15s;border:none;font-family:'Noto Sans TC',sans-serif}
+.bp{background:var(--tx);color:#fff}.bp:hover{background:#333}
+.bs{background:var(--su2);color:var(--tx);border:1px solid var(--bd)}.bs:hover{background:var(--bd)}
+.bd2{background:var(--rdl);color:var(--rd);border:1px solid #FECACA}
+.bg2{background:none;color:var(--tx2);border:1px solid var(--bd)}.bg2:hover{background:var(--su2)}
+.bsm{padding:4px 10px;font-size:11.5px}
+.ba{display:flex;gap:6px;margin-top:10px;flex-wrap:wrap}
+.sd{display:flex;align-items:center;gap:8px;margin:14px 0 8px;font-size:10px;font-weight:600;color:var(--tx3);letter-spacing:.07em;text-transform:uppercase}
+.sd::after{content:'';flex:1;height:1px;background:var(--bd)}
+.pb{display:flex;align-items:center;gap:6px;padding:6px 10px;border-radius:7px;font-size:12px;font-weight:500;margin-bottom:9px}
+.pb.cr2{background:var(--rdl);color:var(--rd)}
+.pb.wr{background:var(--aml);color:var(--am)}
+.pb.nm{background:var(--gnl);color:var(--gn)}
+.pb.st{background:var(--grl);color:var(--gr)}
+.ri{background:var(--su);border:1px solid var(--bd);border-radius:var(--rlg);padding:14px 16px;margin-bottom:9px;box-shadow:var(--sh)}
+.rih{display:flex;align-items:center;gap:7px;margin-bottom:8px;flex-wrap:wrap}
+.rd2{font-size:12px;color:var(--tx3);font-family:'DM Mono',monospace}
+.rr{font-size:13px;font-weight:600}.rc{font-size:12px;color:var(--tx2)}
+.at{display:flex;gap:5px;flex-wrap:wrap;margin-bottom:7px}
+.ag{padding:2px 8px;border-radius:20px;font-size:11px;background:var(--su2);color:var(--tx2)}
+.rn{font-size:13px;line-height:1.6}.rf{font-size:12px;color:var(--tx3);margin-top:6px}
+.fwp{max-width:580px}
+.fcd{background:var(--su);border:1px solid var(--bd);border-radius:var(--rlg);padding:20px;box-shadow:var(--sh);margin-bottom:16px}
+.fct{font-size:14px;font-weight:600;margin-bottom:14px}
+.acs{display:flex;flex-wrap:wrap;gap:6px}
+.ac2{padding:5px 12px;border-radius:20px;border:1px solid var(--bd);background:none;cursor:pointer;font-size:12px;color:var(--tx2);transition:all .15s;font-family:'Noto Sans TC',sans-serif}
+.ac2:hover{background:var(--su2)}
+.ac2.active{background:var(--tx);color:#fff;border-color:var(--tx)}
+.mo2{display:none;position:fixed;inset:0;background:rgba(0,0,0,.38);z-index:200;align-items:center;justify-content:center}
+.mo2.op{display:flex}
+.mb2{background:var(--su);border-radius:var(--rlg);padding:22px;width:90%;max-width:400px;border:1px solid var(--bd);box-shadow:0 8px 32px rgba(0,0,0,.12)}
+.mt2{font-size:15px;font-weight:600;margin-bottom:14px}
+.ms3{font-size:13px;color:var(--tx2);margin-bottom:12px}
+.ma{display:flex;gap:7px;margin-top:16px}
+.rc2{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:12px}
+.rcp{padding:4px 11px;border-radius:20px;border:1px solid var(--bd);background:none;cursor:pointer;font-size:12px;color:var(--tx2);font-family:'Noto Sans TC',sans-serif;transition:all .15s}
+.rcp:hover{background:var(--su2)}
+.rcp.active{background:var(--tx);color:#fff;border-color:var(--tx)}
+.an{background:var(--aml);border-radius:7px;padding:8px 11px;font-size:12px;color:var(--am);margin-top:10px;line-height:1.5}
+.ts{position:fixed;bottom:22px;right:22px;background:var(--tx);color:#fff;padding:10px 15px;border-radius:var(--r);font-size:13px;font-weight:500;z-index:9999;opacity:0;transform:translateY(8px);transition:all .22s;pointer-events:none}
+.ts.sh{opacity:1;transform:translateY(0)}
+hr.tn{border:none;border-top:1px solid var(--bd);margin:13px 0}
+</style>
+</head>
+<body>
+<div id="ls">
+  <div class="lc">
+    <div class="lm">Sales OS</div>
+    <h1>業務回報系統</h1>
+    <p>請使用公司 Google 帳號登入<br>僅限公司內部人員使用</p>
+    <div id="le">此帳號非公司內部帳號，請改用公司帳號。</div>
+    <div id="gsb"></div>
+    <button class="db" onclick="devLogin('manager')">🔧 以主管身份進入（測試）</button>
+    <button class="db" onclick="devLogin('rep')">🔧 以業務身份進入（測試）</button>
+    <div class="nt">部署前請移除測試按鈕並填入 GOOGLE_CLIENT_ID</div>
+  </div>
+</div>
+<div class="app" id="ma" style="display:none">
+  <aside class="sb">
+    <div class="sbl"><div class="lm">Sales OS</div><h1>業務回報系統</h1></div>
+    <nav class="sbn">
+      <div class="nsc">主選單</div>
+      <button class="ni active" onclick="sp('ov',this)">📊 月度總覽</button>
+      <button class="ni" onclick="sp('cu',this)">🏢 客戶管理</button>
+      <button class="ni" onclick="sp('rf',this)">📝 每日回報</button>
+      <button class="ni" onclick="sp('hi',this)">📋 回報紀錄</button>
+    </nav>
+    <div class="sbu"><div class="av" id="sav">陳</div><div><div class="un" id="snm">陳總經理</div><div class="ur" id="srl">主管</div></div></div>
+  </aside>
+  <div class="mn">
+    <header class="tb">
+      <div class="tbt" id="tt">月度總覽</div>
+      <div class="rt"><button class="rb" onclick="sr('rep',this)">業務視角</button><button class="rb active" onclick="sr('manager',this)">主管視角</button></div>
+      <div class="ms"><button class="mb" onclick="cm(-1)">&#8592;</button><span id="cm">2025年 5月</span><button class="mb" onclick="cm(1)">&#8594;</button></div>
+      <button class="btn bp bsm" onclick="om('ac')">+ 新增客戶</button>
+    </header>
+    <div class="ct">
+      <div id="pov">
+        <div class="mg">
+          <div class="mc hi"><div class="mt"><div class="ml">本月拜訪</div><div class="mi" style="background:#C7D0FF;color:var(--ac)">🚗</div></div><div class="mv" id="m1" style="color:var(--ac)">12</div><div class="ms2">次</div></div>
+          <div class="mc"><div class="mt"><div class="ml">正式報價</div><div class="mi" style="background:var(--bll);color:var(--bl)">📄</div></div><div class="mv" id="m2" style="color:var(--bl)">6</div><div class="ms2">份</div></div>
+          <div class="mc"><div class="mt"><div class="ml">成交</div><div class="mi" style="background:var(--gnl);color:var(--gn)">✅</div></div><div class="mv" id="m3" style="color:var(--gn)">2</div><div class="ms2">筆</div></div>
+          <div class="mc"><div class="mt"><div class="ml">報價轉換率</div><div class="mi" style="background:var(--aml);color:var(--am)">📈</div></div><div class="mv" id="m4" style="color:var(--am)">33%</div><div class="ms2">報價→成交</div></div>
+        </div>
+        <div class="fw"><div class="fh"><div class="sl">業績漏斗</div>
+          <select style="font-size:12px;border:1px solid var(--bd);border-radius:7px;padding:3px 8px;background:var(--su2);color:var(--tx2);outline:none" onchange="fro(this.value)">
+            <option value="all">全部業務</option><option>王小明</option><option>林美玲</option><option>陳志豪</option>
+          </select></div>
+          <div class="fr"><div class="ft">拜訪</div><div class="fbg"><div class="fb" id="fv" style="width:100%;background:#C7D0FF;color:var(--pu)">12次</div></div><div class="fn" id="nv">12</div></div>
+          <div class="fr"><div class="ft">報價</div><div class="fbg"><div class="fb" id="fq" style="width:50%;background:#BFDBFE;color:var(--bl)">6次</div></div><div class="fn" id="nq">6</div></div>
+          <div class="fr"><div class="ft">成交</div><div class="fbg"><div class="fb" id="fc" style="width:17%;background:#A7F3D0;color:var(--gn)">2次</div></div><div class="fn" id="nc">2</div></div>
+        </div>
+        <div class="rw"><div style="padding:12px 14px;font-size:13px;font-weight:600;border-bottom:1px solid var(--bd)">各業務本月表現</div>
+          <table class="rt2"><thead><tr><th>業務</th><th>拜訪</th><th>報價</th><th>成交</th><th>金額</th><th>轉換率</th></tr></thead>
+            <tbody>
+              <tr><td><div style="display:flex;align-items:center;gap:7px"><div style="width:25px;height:25px;border-radius:6px;background:var(--pul);color:var(--pu);display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:600">王</div>王小明</div></td><td>5</td><td>3</td><td>1</td><td class="mo">$240,000</td><td><span class="rm mo">20%</span></td></tr>
+              <tr><td><div style="display:flex;align-items:center;gap:7px"><div style="width:25px;height:25px;border-radius:6px;background:var(--gnl);color:var(--gn);display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:600">林</div>林美玲</div></td><td>4</td><td>2</td><td>1</td><td class="mo">$180,000</td><td><span class="rg mo">25%</span></td></tr>
+              <tr><td><div style="display:flex;align-items:center;gap:7px"><div style="width:25px;height:25px;border-radius:6px;background:var(--aml);color:var(--am);display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:600">陳</div>陳志豪</div></td><td>3</td><td>1</td><td>0</td><td class="mo">$0</td><td><span class="rl mo">0%</span></td></tr>
+            </tbody></table>
+        </div>
+      </div>
+      <div id="pcu" style="display:none">
+        <div class="lh"><div class="sl">客戶管理</div><button class="btn bp bsm" onclick="om('ac')">+ 新增客戶</button></div>
+        <div class="fc" id="cfs">
+          <button class="fp active" onclick="fc2('active',this)">進行中</button>
+          <button class="fp" onclick="fc2('urgent',this)">🔴 需立即跟進</button>
+          <button class="fp" onclick="fc2('soon',this)">🟡 本週到期</button>
+          <button class="fp" onclick="fc2('strategic',this)">長期戰略</button>
+          <button class="fp" onclick="fc2('partner',this)">有望合作</button>
+          <button class="fp" onclick="fc2('prospect',this)">有望成交</button>
+          <button class="fp" onclick="fc2('frozen',this)">❄ 冷凍中</button>
+          <button class="fp" onclick="fc2('dead',this)">🗃 已結案</button>
+          <button class="fp" onclick="fc2('all',this)">全部</button>
+        </div>
+        <div class="cl" id="cul"></div>
+      </div>
+      <div id="prf" style="display:none">
+        <div class="fwp"><div class="fcd">
+          <div class="fct">📝 每日業務回報</div>
+          <div class="fg"><div class="dl">日期</div><input type="date" class="fi" id="rd"></div>
+          <div class="fg"><div class="dl">負責業務</div><select class="fi" id="rp"><option>王小明</option><option>林美玲</option><option>陳志豪</option></select></div>
+          <div class="fg"><div class="dl">客戶</div><select class="fi" id="rcu"><option value="">選擇客戶…</option><option>台積電股份有限公司</option><option>聯發科技股份有限公司</option><option>緯創資通股份有限公司</option><option>鴻海精密工業</option><option>研華科技</option></select></div>
+          <div class="fg"><div class="dl">本次活動（可複選）</div>
+            <div class="acs">
+              <button class="ac2" onclick="tc(this)">🚗 客戶拜訪</button>
+              <button class="ac2" onclick="tc(this)">📞 電話</button>
+              <button class="ac2" onclick="tc(this)">📊 提案簡報</button>
+              <button class="ac2" onclick="tc(this)">📄 正式報價</button>
+              <button class="ac2" onclick="tc(this)">✅ 成交簽約</button>
+              <button class="ac2" onclick="tc(this)">🔄 售後追蹤</button>
+            </div>
+          </div>
+          <div class="fg"><div class="dl">更新客戶分級</div><select class="fi"><option value="">維持現有分級</option><option>長期戰略合作</option><option>有望合作</option><option>有望成交</option><option>持續追蹤</option><option>已成交</option></select></div>
+          <div class="fg"><div class="dl">下次跟進日期</div><input type="date" class="fi" id="rfu"></div>
+          <div class="fg"><div class="dl">訪談重點 / 備註</div><textarea class="fi" rows="4" placeholder="今日洽談重點、客戶反應、下次跟進計畫…"></textarea></div>
+          <div class="fg"><div class="dl">報價金額（若有）</div><input type="text" class="fi mo" placeholder="NT$0"></div>
+          <hr class="tn">
+          <div style="display:flex;gap:8px;justify-content:flex-end">
+            <button class="btn bs">草稿儲存</button>
+            <button class="btn bp" onclick="sub()">送出回報 →</button>
+          </div>
+        </div></div>
+      </div>
+      <div id="phi" style="display:none">
+        <div class="lh"><div class="sl">回報紀錄</div><div style="font-size:12px;color:var(--tx3)">未結案 × 最久未跟進優先</div></div>
+        <div id="hl"></div>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="mo2" id="mac" onclick="if(event.target===this)cm2('ac')">
+  <div class="mb2">
+    <div class="mt2">新增客戶</div>
+    <div class="fg"><div class="dl">公司名稱</div><input type="text" class="fi" placeholder="公司全名"></div>
+    <div class="fg"><div class="dl">負責業務</div><select class="fi"><option>王小明</option><option>林美玲</option><option>陳志豪</option></select></div>
+    <div class="fg"><div class="dl">初始分級</div><select class="fi"><option>持續追蹤</option><option>有望成交</option><option>有望合作</option><option>長期戰略合作</option></select></div>
+    <div class="fg"><div class="dl">首次跟進日期</div><input type="date" class="fi"></div>
+    <div class="ma">
+      <button class="btn bs" style="flex:1" onclick="cm2('ac')">取消</button>
+      <button class="btn bp" style="flex:1" onclick="cm2('ac');toast('✅ 客戶已新增')">確認新增</button>
+    </div>
+  </div>
+</div>
+<div class="mo2" id="mcl" onclick="if(event.target===this)cm2('cl')">
+  <div class="mb2">
+    <div class="mt2" id="clt">結案確認</div>
+    <div class="ms3">請選擇原因（留存紀錄用）</div>
+    <div class="rc2" id="rcs"></div>
+    <div class="fg"><div class="dl">補充說明（可選）</div><textarea class="fi" rows="2" id="cnote" placeholder="…"></textarea></div>
+    <div class="an" id="cwarn"></div>
+    <div class="ma">
+      <button class="btn bs" style="flex:1" onclick="cm2('cl')">取消</button>
+      <button class="btn bd2" style="flex:1" id="ccb" onclick="cfm()">確認</button>
+    </div>
+  </div>
+</div>
+<div class="ts" id="tst"></div>
+<script>
+var GCI='YOUR_CLIENT_ID.apps.googleusercontent.com',AD='yourcompany.com';
+var role='manager',cp='ov',cf='active',cid=null,ctp=null;
+var MN=['1月','2月','3月','4月','5月','6月','7月','8月','9月','10月','11月','12月'];
+var MD={4:{v:12,q:6,c:2},3:{v:9,q:4,c:1},2:{v:11,q:5,c:3}};
+var cmi=4;
+var GS={strategic:{c:'bg-s',l:'長期戰略合作'},partner:{c:'bg-p',l:'有望合作'},prospect:{c:'bg-q',l:'有望成交'},tracking:{c:'bg-t',l:'持續追蹤'},won:{c:'bg-w',l:'已成交'},frozen:{c:'bg-f',l:'冷凍中'},dead:{c:'bg-d',l:'已結案'}};
+var GW={strategic:1,partner:2,prospect:3,won:4,tracking:5};
+var cx=[
+  {id:1,n:'台積電股份有限公司',s:'台積',r:'王小明',g:'strategic',st:'active',v:3,q:2400000,lv:'2025/05/10',fu:'2025-05-18',lr:'2025-05-10',nt:'Q3採購預算確認中，採購主管偏好台灣廠商。',mr:'下次拜訪前確認技術規格，帶最新 spec sheet。',rd:'2025/05/11 09:30',ab:'var(--pul)',ac:'var(--pu)'},
+  {id:2,n:'聯發科技股份有限公司',s:'聯發',r:'林美玲',g:'partner',st:'active',v:2,q:580000,lv:'2025/05/14',fu:'2025-05-21',lr:'2025-05-14',nt:'已提案，等採購主管核准，林經理態度積極。',mr:'可提供小量試用方案降低決策門檻。',rd:'2025/05/14 17:00',ab:'var(--gnl)',ac:'var(--gn)'},
+  {id:3,n:'緯創資通股份有限公司',s:'緯創',r:'陳志豪',g:'prospect',st:'active',v:1,q:120000,lv:'2025/05/08',fu:'2025-05-15',lr:'2025-05-08',nt:'小單，決策快，本週需跟進。',mr:'先拿下建立關係，未來有更大合作機會。',rd:'2025/05/09 10:00',ab:'var(--aml)',ac:'var(--am)'},
+  {id:4,n:'鴻海精密工業',s:'鴻海',r:'王小明',g:'tracking',st:'active',v:1,q:0,lv:'2025/04/28',fu:'2025-05-30',lr:'2025-04-28',nt:'初次拜訪，採購部門還在評估。',mr:'',rd:'',ab:'var(--su2)',ac:'var(--tx2)'},
+  {id:5,n:'研華科技股份有限公司',s:'研華',r:'林美玲',g:'won',st:'active',v:4,q:320000,lv:'2025/05/02',fu:'2025-06-02',lr:'2025-05-02',nt:'已成交！後續安排安裝與教育訓練。',mr:'確認合約交期，安排售後服務時間表。',rd:'2025/05/03 08:45',ab:'var(--bll)',ac:'var(--bl)'},
+  {id:6,n:'華碩電腦股份有限公司',s:'華碩',r:'陳志豪',g:'prospect',st:'frozen',v:2,q:80000,lv:'2025/03/15',fu:'2025-04-01',lr:'2025-03-15',fa:'2025/04/20',fr:'客戶暫緩 — 內部組織調整',nt:'已報價，客戶說Q2再評估，之後失聯。',mr:'Q3可主動聯絡一次探口風。',rd:'2025/04/20 14:00',ab:'var(--grl)',ac:'var(--gr)'},
+  {id:7,n:'廣達電腦股份有限公司',s:'廣達',r:'王小明',g:'prospect',st:'dead',v:3,q:200000,lv:'2025/02/10',fu:'2025-03-01',lr:'2025-02-10',da:'2025/03/15',dr:'輸單',nt:'最終選擇競品，價格差距大。',mr:'記錄競品報價，下次投標調整策略。',rd:'2025/03/15 16:00',ab:'var(--grl)',ac:'var(--gr)'}
+];
+var rx=[
+  {id:1,dt:'2025/05/14',iso:'2025-05-14',r:'林美玲',cu:'聯發科技股份有限公司',ac:['📊 提案簡報','📄 正式報價'],fu:'2025/05/21',nt:'帶新版提案，林經理正面回應，已提交報價 NT$580,000，等待核准。',mr:'下次拜訪前先電話確認主管顧慮，帶同業案例。',rd:'2025/05/14 18:00',cl:false},
+  {id:2,dt:'2025/05/10',iso:'2025-05-10',r:'王小明',cu:'台積電股份有限公司',ac:['🚗 客戶拜訪','📞 電話'],fu:'2025/05/18',nt:'與採購部張副理確認 Q3 規格，對方提出希望加入備援模組。',mr:'備援模組先確認毛利率，必要時找技術部門協同報價。',rd:'2025/05/11 09:30',cl:false},
+  {id:3,dt:'2025/05/08',iso:'2025-05-08',r:'陳志豪',cu:'緯創資通股份有限公司',ac:['🚗 客戶拜訪','📄 正式報價'],fu:'2025/05/15',nt:'初次現場拜訪，預算約10-15萬，已提交基礎方案報價。',mr:'本週務必電話追蹤，不要讓他們冷掉。',rd:'2025/05/09 10:00',cl:false},
+  {id:4,dt:'2025/02/10',iso:'2025-02-10',r:'王小明',cu:'廣達電腦股份有限公司',ac:['🚗 客戶拜訪'],fu:'2025/03/01',nt:'最後一次拜訪，得知客戶選擇競品，結案。',mr:'記錄競品報價，下次投標調整策略。',rd:'2025/03/15 16:00',cl:true}
+];
+function td(){var d=new Date();d.setHours(0,0,0,0);return d}
+function dd(iso){if(!iso)return 0;var d=new Date(iso);d.setHours(0,0,0,0);return Math.ceil((td()-d)/864e5)}
+function fu_u(c){if(c.st!=='active')return c.st;if(!c.fu)return'none';var d=new Date(c.fu);d.setHours(0,0,0,0);var df=Math.ceil((d-td())/864e5);if(df<=3)return'urgent';if(df<=7)return'soon';return'ok'}
+function fu_l(c){
+  if(c.st==='dead')return{cls:'dd2',tx:'🗃 已結案'};
+  if(c.st==='frozen')return{cls:'fz2',tx:'❄ 冷凍中'};
+  if(!c.fu)return{cls:'no',tx:'未設定跟進'};
+  var d=new Date(c.fu);d.setHours(0,0,0,0);var df=Math.ceil((d-td())/864e5);
+  if(df<0)return{cls:'ug',tx:'⚠ 逾期 '+Math.abs(df)+' 天'};
+  if(df===0)return{cls:'ug',tx:'⚠ 今日跟進'};
+  if(df<=3)return{cls:'ug',tx:'🔴 '+df+' 天後'};
+  if(df<=7)return{cls:'sn',tx:'🟡 '+df+' 天後'};
+  return{cls:'ok',tx:'🟢 '+c.fu.replace(/-/g,'/')};
+}
+function gi(g){return GS[g]||GS.tracking}
+function sk(c){if(c.st==='dead')return 100;if(c.st==='frozen')return 50;var u=fu_u(c);if(u==='urgent')return 0;if(u==='soon')return 10;if(u==='ok')return 20+(GW[c.g]||5);return 30}
+function caf(){cx.forEach(function(c){if(c.st!=='active'||!c.fu)return;var d=new Date(c.fu);d.setHours(0,0,0,0);var df=Math.ceil((td()-d)/864e5);if(df>14){c.st='frozen';c.fa=new Date().toLocaleDateString('zh-TW');c.fr='系統自動標記：跟進日期已過 '+df+' 天未更新';}})}
+function rc(filter){
+  cf=filter;caf();
+  var l=cx.slice();
+  if(filter==='active')l=l.filter(function(c){return c.st==='active'});
+  else if(filter==='urgent')l=l.filter(function(c){return c.st==='active'&&fu_u(c)==='urgent'});
+  else if(filter==='soon')l=l.filter(function(c){return c.st==='active'&&fu_u(c)==='soon'});
+  else if(filter==='frozen')l=l.filter(function(c){return c.st==='frozen'});
+  else if(filter==='dead')l=l.filter(function(c){return c.st==='dead'});
+  else if(GS[filter])l=l.filter(function(c){return c.g===filter&&c.st==='active'});
+  l.sort(function(a,b){return sk(a)-sk(b)});
+  var el=document.getElementById('cul');
+  if(!l.length){el.innerHTML='<div style="padding:24px;text-align:center;color:var(--tx3);font-size:13px">此分類暫無客戶</div>';return}
+  var aH='',fH='',dH='';
+  l.forEach(function(c){
+    var g=gi(c.st==='dead'?'dead':c.st==='frozen'?'frozen':c.g);
+    var fu=fu_l(c),u=fu_u(c);
+    var cc=c.st==='dead'?'dd':c.st==='frozen'?'fz':u==='urgent'?'ug':u==='soon'?'sn':'ok';
+    var bn='';
+    if(c.st==='frozen')bn='<div class="fzb">❄ 冷凍中：'+c.fr+'<br><span style="font-size:11px">標記日：'+c.fa+'</span></div>';
+    if(c.st==='dead')bn='<div class="ddb">🗃 已結案：'+c.dr+'<br><span style="font-size:11px">結案日：'+c.da+'</span></div>';
+    var acts='';
+    if(c.st==='active')acts='<div class="ba"><button class="btn bg2 bsm" onclick="event.stopPropagation();tg('+c.id+','frozen')">❄ 標記冷凍</button><button class="btn bd2 bsm" onclick="event.stopPropagation();tg('+c.id+','dead')">🗃 結案</button></div>';
+    else if(c.st==='frozen')acts='<div class="ba"><button class="btn bs bsm" onclick="event.stopPropagation();ra('+c.id+')">↩ 恢復追蹤</button><button class="btn bd2 bsm" onclick="event.stopPropagation();tg('+c.id+','dead')">🗃 正式結案</button></div>';
+    else acts='<div class="ba"><button class="btn bs bsm" onclick="event.stopPropagation();ra('+c.id+')">↩ 重新追蹤</button></div>';
+    var rp='';
+    if(role==='manager')rp='<div class="rpb"><div class="rpl">✏ 主管回覆</div><textarea class="rpi" onclick="event.stopPropagation()" onchange="ur('+c.id+',this.value)">'+c.mr+'</textarea>'+(c.rd?'<div class="rpm">'+c.rd+'</div>':'')+'</div>';
+    else if(c.mr)rp='<div class="rpb"><div class="rpl">💬 主管建議</div><div class="rpt">'+c.mr+'</div><div class="rpm">'+c.rd+'</div></div>';
+    var html='<div class="cc '+cc+'" id="cc'+c.id+'"><div class="ch" onclick="tcc('+c.id+')">'
+      +'<div class="ca" style="background:'+c.ab+';color:'+c.ac+'">'+c.s+'</div>'
+      +'<div class="cm2"><div class="cn">'+c.n+'</div><div class="cme">負責：'+c.r+' · 最後拜訪：'+c.lv+'</div></div>'
+      +'<div class="cr"><span class="fp2 '+fu.cls+'">'+fu.tx+'</span><span class="bg '+g.c+'">'+g.l+'</span><span class="cv" id="cv'+c.id+'">▾</span></div>'
+      +'</div><div class="cb" id="cb'+c.id+'">'+bn
+      +'<div class="dg"><div><div class="dl">本月拜訪</div><div class="dv mo">'+c.v+' 次</div></div><div><div class="dl">報價金額</div><div class="dv mo">NT$'+c.q.toLocaleString()+'</div></div></div>'
+      +(c.st==='active'?'<div class="fg"><div class="dl">客戶分級</div><select class="fi" onclick="event.stopPropagation()" onchange="ug2('+c.id+',this.value)">'+Object.keys(GS).filter(function(k){return k!=='frozen'&&k!=='dead'}).map(function(k){return'<option value="'+k+'"'+(c.g===k?' selected':'')+'>'+GS[k].l+'</option>'}).join('')+'</select></div>'
+        +'<div class="fg"><div class="dl">下次跟進日期</div><input type="date" class="fi" value="'+c.fu+'" onclick="event.stopPropagation()" onchange="uf('+c.id+',this.value)"></div>':'')
+      +'<div class="fg"><div class="dl">備註</div><textarea class="fi" rows="2" onclick="event.stopPropagation()" onchange="un('+c.id+',this.value)">'+c.nt+'</textarea></div>'
+      +rp+acts+'</div></div>';
+    if(c.st==='active')aH+=html;
+    else if(c.st==='frozen')fH+=html;
+    else dH+=html;
+  });
+  var out='';
+  if(filter==='all'){out=aH;if(fH)out+='<div class="sd">冷凍中</div>'+fH;if(dH)out+='<div class="sd">已結案</div>'+dH;}
+  else out=aH||fH||dH;
+  el.innerHTML=out||'<div style="padding:24px;text-align:center;color:var(--tx3);font-size:13px">此分類暫無客戶</div>';
+}
+function tcc(id){var b=document.getElementById('cb'+id),cv=document.getElementById('cv'+id),op=b.classList.contains('op');b.classList.toggle('op',!op);cv.classList.toggle('op',!op)}
+function ug2(id,v){var c=cx.find(function(x){return x.id===id});if(c)c.g=v;toast('✅ 分級已更新')}
+function uf(id,v){var c=cx.find(function(x){return x.id===id});if(c){c.fu=v;c.lr=v;}rc(cf);toast('📅 跟進日期已更新')}
+function un(id,v){var c=cx.find(function(x){return x.id===id});if(c)c.nt=v}
+function ur(id,v){var c=cx.find(function(x){return x.id===id});if(c){c.mr=v;c.rd=new Date().toLocaleString('zh-TW',{hour12:false}).slice(0,-3);}toast('💬 主管回覆已儲存')}
+function tg(id,tp){
+  cid=id;ctp=tp;
+  var c=cx.find(function(x){return x.id===id}),isFr=tp==='frozen';
+  document.getElementById('clt').textContent=(isFr?'標記冷凍：':'結案確認：')+c.n;
+  document.getElementById('ccb').textContent=isFr?'確認冷凍':'確認結案';
+  var rs=isFr?['客戶暫緩','聯絡中斷','等待時機','其他']:['輸單','預算凍結','客戶暫緩','聯絡中斷','需求取消','其他'];
+  document.getElementById('rcs').innerHTML=rs.map(function(r){return'<button class="rcp" onclick="sr2(this)">'+r+'</button>'}).join('');
+  document.getElementById('cwarn').textContent=isFr?'客戶資料保留，可在「冷凍中」篩選查看，或隨時恢復追蹤。':'客戶資料完整保留，可在「已結案」中查閱，未來也可重新追蹤。';
+  document.getElementById('cnote').value='';
+  om('cl');
+}
+function sr2(btn){document.querySelectorAll('#rcs .rcp').forEach(function(b){b.classList.remove('active')});btn.classList.add('active')}
+function cfm(){
+  var c=cx.find(function(x){return x.id===cid});if(!c){cm2('cl');return}
+  var r=document.querySelector('#rcs .rcp.active');
+  var note=document.getElementById('cnote').value;
+  var reason=(r?r.textContent:'未說明')+(note?' — '+note:'');
+  var dt=new Date().toLocaleDateString('zh-TW');
+  if(ctp==='dead'){c.st='dead';c.da=dt;c.dr=reason;toast('🗃 已結案，資料保留中');}
+  else{c.st='frozen';c.fa=dt;c.fr=reason;toast('❄ 已標記冷凍');}
+  cm2('cl');rc(cf);
+}
+function ra(id){var c=cx.find(function(x){return x.id===id});if(c){c.st='active';delete c.fa;delete c.fr;delete c.da;delete c.dr;}toast('↩ 已恢復追蹤');rc(cf)}
+function rh(){
+  var sorted=rx.slice().sort(function(a,b){if(a.cl&&!b.cl)return 1;if(!a.cl&&b.cl)return -1;return dd(b.iso)-dd(a.iso)});
+  var od=false,cd=false,html='';
+  sorted.forEach(function(r){
+    var st=dd(r.iso);
+    var pc,pt;
+    if(r.cl){pc='st';pt='🗃 已結案案件';}
+    else if(st>=30){pc='cr2';pt='⚠ 超過 '+st+' 天未更新 — 需立即確認';}
+    else if(st>=14){pc='wr';pt='🟡 '+st+' 天前回報，注意追蹤';}
+    else{pc='nm';pt='🟢 '+st+' 天前回報';}
+    if(!r.cl&&!od){html+='<div class="sd">進行中（最久未跟進優先）</div>';od=true;}
+    if(r.cl&&!cd){html+='<div class="sd">已結案</div>';cd=true;}
+    var rp='';
+    if(role==='manager')rp='<div class="rpb" style="margin-top:9px"><div class="rpl">✏ 主管回覆</div><textarea class="rpi" onchange="uhr('+r.id+',this.value)">'+r.mr+'</textarea>'+(r.rd?'<div class="rpm">'+r.rd+'</div>':'')+'</div>';
+    else if(r.mr)rp='<div class="rpb" style="margin-top:9px"><div class="rpl">💬 主管建議</div><div class="rpt">'+r.mr+'</div><div class="rpm">'+r.rd+'</div></div>';
+    html+='<div class="ri"><div class="pb '+pc+'">'+pt+'</div>'
+      +'<div class="rih"><span class="rd2">'+r.dt+'</span><span class="rr">'+r.r+'</span><span class="rc">→ '+r.cu+'</span><span style="flex:1"></span>'+(r.cl?'<span class="bg bg-d">已結案</span>':'')+'</div>'
+      +'<div class="at">'+r.ac.map(function(a){return'<span class="ag">'+a+'</span>'}).join('')+'</div>'
+      +'<div class="rn">'+r.nt+'</div>'+(r.fu?'<div class="rf">📅 設定跟進：'+r.fu+'</div>':'')+rp+'</div>';
+  });
+  document.getElementById('hl').innerHTML=html||'<div style="padding:24px;text-align:center;color:var(--tx3)">暫無紀錄</div>';
+}
+function uhr(id,v){var r=rx.find(function(x){return x.id===id});if(r){r.mr=v;r.rd=new Date().toLocaleString('zh-TW',{hour12:false}).slice(0,-3);}toast('💬 主管回覆已儲存')}
+function tc(btn){btn.classList.toggle('active')}
+function sub(){
+  rx.unshift({id:rx.length+1,dt:document.getElementById('rd').value||new Date().toLocaleDateString('zh-TW'),iso:document.getElementById('rd').value||new Date().toISOString().slice(0,10),r:document.getElementById('rp').value,cu:document.getElementById('rcu').value||'未指定',ac:Array.from(document.querySelectorAll('.ac2.active')).map(function(b){return b.textContent}),fu:document.getElementById('rfu').value||'',nt:'（新增回報）',mr:'',rd:'',cl:false});
+  toast('✅ 回報已送出！');setTimeout(function(){sp('hi',document.querySelectorAll('.ni')[3])},500);
+}
+function cm(d){cmi=Math.max(0,Math.min(11,cmi+d));document.getElementById('cm').textContent='2025年 '+MN[cmi];um()}
+function um(data){
+  var d=data||MD[cmi]||{v:0,q:0,c:0};
+  document.getElementById('m1').textContent=d.v;document.getElementById('m2').textContent=d.q;document.getElementById('m3').textContent=d.c;
+  document.getElementById('m4').textContent=(d.q>0?Math.round(d.c/d.q*100):0)+'%';
+  sb('fv','nv',100,d.v);sb('fq','nq',d.v>0?Math.max(Math.round(d.q/d.v*100),3):3,d.q);sb('fc','nc',d.v>0?Math.max(Math.round(d.c/d.v*100),3):3,d.c);
+}
+function sb(bi,ni,w,n){document.getElementById(bi).style.width=w+'%';document.getElementById(bi).textContent=n+'次';document.getElementById(ni).textContent=n}
+function fro(rep){var m={all:{v:12,q:6,c:2},'王小明':{v:5,q:3,c:1},'林美玲':{v:4,q:2,c:1},'陳志豪':{v:3,q:1,c:0}};um(m[rep]||{v:0,q:0,c:0})}
+function sp(p,btn){
+  var pages={ov:'pov',cu:'pcu',rf:'prf',hi:'phi'};
+  Object.values(pages).forEach(function(id){document.getElementById(id).style.display='none'});
+  document.getElementById(pages[p]||p).style.display='';
+  document.querySelectorAll('.ni').forEach(function(b){b.classList.remove('active')});
+  if(btn)btn.classList.add('active');cp=p;
+  var T={ov:'月度總覽',cu:'客戶管理',rf:'每日回報',hi:'回報紀錄'};
+  document.getElementById('tt').textContent=T[p]||'';
+  if(p==='cu')rc(cf);if(p==='hi')rh();
+}
+function sr(r,btn){
+  role=r;document.querySelectorAll('.rb').forEach(function(b){b.classList.remove('active')});btn.classList.add('active');
+  var isM=r==='manager';document.getElementById('snm').textContent=isM?'陳總經理':'王小明';document.getElementById('sav').textContent=isM?'陳':'王';document.getElementById('srl').textContent=isM?'主管':'業務';
+  if(cp==='cu')rc(cf);if(cp==='hi')rh();
+}
+function fc2(f,btn){document.querySelectorAll('#cfs .fp').forEach(function(b){b.classList.remove('active')});btn.classList.add('active');rc(f)}
+function om(n){document.getElementById('m'+n).classList.add('op')}
+function cm2(n){document.getElementById('m'+n).classList.remove('op')}
+function toast(msg){var t=document.getElementById('tst');t.textContent=msg;t.classList.add('sh');setTimeout(function(){t.classList.remove('sh')},2200)}
+function ig(){if(typeof google==="undefined"){setTimeout(ig,300);return}google.accounts.id.initialize({client_id:GCI,callback:hc,hd:AD});google.accounts.id.renderButton(document.getElementById('gsb'),{theme:'outline',size:'large',locale:'zh-TW',width:280})}
+function hc(resp){var p=JSON.parse(atob(resp.credential.split('.')[1]));if((p.email||'').split('@')[1]!==AD){document.getElementById('le').style.display='block';return}var isM=p.email.startsWith('manager')||p.email.startsWith('boss');document.getElementById('snm').textContent=p.name||p.email;document.getElementById('sav').textContent=(p.name||'?')[0];sr(isM?'manager':'rep',document.querySelectorAll('.rb')[isM?1:0]);document.getElementById('ls').style.display='none';document.getElementById('ma').style.display='flex'}
+function devLogin(r){var isM=r==='manager';document.getElementById('snm').textContent=isM?'陳總經理':'王小明';document.getElementById('sav').textContent=isM?'陳':'王';document.getElementById('srl').textContent=isM?'主管':'業務';role=r;var bs=document.querySelectorAll('.rb');bs[0].classList.toggle('active',!isM);bs[1].classList.toggle('active',isM);document.getElementById('ls').style.display='none';document.getElementById('ma').style.display='flex'}
+document.getElementById('rd').valueAsDate=new Date();
+if(GCI!=='YOUR_CLIENT_ID.apps.googleusercontent.com')ig();
+caf();
+</script>
+</body>
+</html>
