@@ -178,11 +178,14 @@ body{font-family:'Noto Sans TC',sans-serif;background:var(--bg);color:var(--tx);
 .tl-acts{display:flex;gap:4px;flex-wrap:wrap;margin-bottom:5px}
 .tl-note{font-size:13px;line-height:1.6;color:var(--tx)}
 .tl-quote{font-size:11px;color:var(--green);font-family:'DM Mono',monospace;margin-top:4px;font-weight:600}
-.tl-reply{background:var(--accent-l);border-left:2px solid #a5b4fc;padding:7px 10px;border-radius:0 6px 6px 0;margin-top:8px}
-.tl-reply-lbl{font-size:10px;font-weight:600;color:var(--accent);letter-spacing:.05em;text-transform:uppercase;margin-bottom:3px}
-.tl-reply-txt{font-size:12px;color:var(--blue);line-height:1.55}
-.tl-reply-meta{font-size:10px;color:#8b97e8;margin-top:2px}
-.tl-reply-input{width:100%;padding:6px 8px;border:1px solid #C7D0FF;border-radius:6px;font-size:12px;font-family:'Noto Sans TC',sans-serif;background:var(--surf);color:var(--tx);outline:none;resize:vertical;min-height:44px}
+.tl-reply{margin-top:10px}
+.tl-reply-bubble{background:var(--accent);color:#fff;border-radius:12px 12px 4px 12px;padding:9px 13px;font-size:13px;line-height:1.55;display:inline-block;max-width:100%;word-break:break-word}
+.tl-reply-meta{font-size:10px;color:#8b97e8;margin-top:4px;display:flex;align-items:center;gap:8px}
+.tl-reply-edit-btn{font-size:10px;color:var(--accent);background:none;border:none;cursor:pointer;font-family:'Noto Sans TC',sans-serif;text-decoration:underline;padding:0}
+.tl-reply-compose{background:var(--accent-l);border:1px solid #C7D0FF;border-radius:10px;padding:10px 12px;margin-top:10px}
+.tl-reply-compose-lbl{font-size:10px;font-weight:600;color:var(--accent);letter-spacing:.05em;text-transform:uppercase;margin-bottom:6px}
+.tl-reply-input{width:100%;padding:7px 9px;border:1px solid #C7D0FF;border-radius:8px;font-size:13px;font-family:'Noto Sans TC',sans-serif;background:var(--surf);color:var(--tx);outline:none;resize:vertical;min-height:52px}
+.tl-reply-input:focus{border-color:var(--accent)}
 .tl-more-btn{font-size:12px;color:var(--accent);background:none;border:none;cursor:pointer;padding:4px 0;font-family:'Noto Sans TC',sans-serif;text-decoration:underline;text-underline-offset:2px;margin-top:4px}
 
 /* ── Section divider ── */
@@ -277,7 +280,6 @@ body{font-family:'Noto Sans TC',sans-serif;background:var(--bg);color:var(--tx);
       <button class="ni active" onclick="goPage('overview',this)"><span>📊</span>月度總覽</button>
       <button class="ni" onclick="goPage('customers',this)"><span>🏢</span>客戶管理</button>
       <button class="ni" onclick="goPage('report-form',this)"><span>📝</span>每日回報</button>
-      <button class="ni" onclick="goPage('history',this)"><span>📋</span>回報紀錄</button>
       <button class="ni" id="nav-settings" onclick="goPage('settings',this)" style="display:none"><span>⚙️</span>系統設定</button>
     </nav>
     <div class="sb-user">
@@ -340,6 +342,7 @@ body{font-family:'Noto Sans TC',sans-serif;background:var(--bg);color:var(--tx);
           <button class="fchip active" onclick="filtCust('active',this)">進行中</button>
           <button class="fchip" onclick="filtCust('urgent',this)">🔴 需立即跟進</button>
           <button class="fchip" onclick="filtCust('soon',this)">🟡 本週到期</button>
+          <button class="fchip" onclick="filtCust('stale',this)">⏱ 最久未跟進</button>
           <button class="fchip" onclick="filtCust('strategic',this)">長期戰略</button>
           <button class="fchip" onclick="filtCust('partner',this)">有望合作</button>
           <button class="fchip" onclick="filtCust('prospect',this)">有望成交</button>
@@ -380,15 +383,6 @@ body{font-family:'Noto Sans TC',sans-serif;background:var(--bg);color:var(--tx);
         </div>
       </div>
 
-      <!-- HISTORY -->
-      <div id="pg-history" style="display:none">
-        <div class="lhdr"><div class="slbl">回報紀錄</div><div style="font-size:12px;color:var(--tx3)">未結案 × 最久未跟進優先</div></div>
-        <div class="rep-bar" id="hist-rep-bar">
-          <div class="rep-bar-lbl">依業務篩選</div>
-          <div class="frow2" id="hist-rep-chips"></div>
-        </div>
-        <div id="hist-list"></div>
-      </div>
 
       <!-- SETTINGS (manager only) -->
       <div id="pg-settings" style="display:none">
@@ -645,14 +639,28 @@ function buildTimeline(custId,showAll,cid){
   var html=show.map(function(v,i){
     var replyH='';
     if(role==='manager'){
-      // 主管回覆：textarea + 送出按鈕
-      replyH='<div class="tl-reply"><div class="tl-reply-lbl">✏ 主管回覆</div>'
-        +'<textarea class="tl-reply-input" id="tr-'+v.id+'" onclick="event.stopPropagation()">'+esc(v.managerReply)+'</textarea>'
-        +(v.managerReplyDate?'<div class="tl-reply-meta" id="trm-'+v.id+'">'+esc(v.managerReplyDate)+'</div>':'<div class="tl-reply-meta" id="trm-'+v.id+'"></div>')
-        +'<button class="reply-send-btn" onclick="event.stopPropagation();saveVlogReply('+v.id+')">送出回覆</button>'
-        +'</div>';
+      if(v.managerReply){
+        // 已有回覆：顯示對話泡泡 + 編輯按鈕
+        replyH='<div class="tl-reply" id="tl-reply-'+v.id+'">'
+          +'<div class="tl-reply-bubble">'+esc(v.managerReply)+'</div>'
+          +'<div class="tl-reply-meta">👔 主管 &nbsp;·&nbsp; '+esc(v.managerReplyDate)
+          +'<button class="tl-reply-edit-btn" onclick="event.stopPropagation();editVlogReply('+v.id+')">✏ 編輯</button>'
+          +'</div></div>';
+      } else {
+        // 尚無回覆：顯示輸入框
+        replyH='<div class="tl-reply-compose" id="tl-reply-'+v.id+'">'
+          +'<div class="tl-reply-compose-lbl">✏ 主管回覆</div>'
+          +'<textarea class="tl-reply-input" id="tr-'+v.id+'" placeholder="輸入回覆…" onclick="event.stopPropagation()"></textarea>'
+          +'<div style="margin-top:7px;display:flex;justify-content:flex-end">'
+          +'<button class="reply-send-btn" onclick="event.stopPropagation();saveVlogReply('+v.id+')">送出回覆</button>'
+          +'</div></div>';
+      }
     }else if(v.managerReply){
-      replyH='<div class="tl-reply"><div class="tl-reply-lbl">💬 主管建議</div><div class="tl-reply-txt">'+esc(v.managerReply)+'</div>'+(v.managerReplyDate?'<div class="tl-reply-meta">'+esc(v.managerReplyDate)+'</div>':'')+'</div>';
+      // 業務視角：只讀氣泡
+      replyH='<div class="tl-reply" id="tl-reply-'+v.id+'">'
+        +'<div class="tl-reply-bubble">'+esc(v.managerReply)+'</div>'
+        +'<div class="tl-reply-meta">👔 主管 &nbsp;·&nbsp; '+esc(v.managerReplyDate)+'</div>'
+        +'</div>';
     }
     return '<div class="tl-item"><div class="tl-spine"><div class="tl-dot'+(i===0?' latest':'')+'"></div>'+(i<show.length-1?'<div class="tl-line"></div>':'')+'</div>'
       +'<div class="tl-body"><div class="tl-meta">'+esc(v.date)+' &nbsp;·&nbsp; '+esc(v.rep)+'</div>'
@@ -669,10 +677,48 @@ function saveVlogReply(id){
   var v=visitLogs.find(function(x){return x.id===id;});
   var ta=document.getElementById('tr-'+id);
   if(!v||!ta)return;
-  v.managerReply=ta.value;v.managerReplyDate=tsNow();
-  var meta=document.getElementById('trm-'+id);
-  if(meta)meta.textContent=v.managerReplyDate;
-  toast('💬 主管回覆已送出');
+  var txt=ta.value.trim();
+  if(!txt){toast('⚠ 請輸入回覆內容');return;}
+  v.managerReply=txt;
+  v.managerReplyDate=tsNow();
+  // 把輸入框換成對話泡泡
+  var wrap=document.getElementById('tl-reply-'+id);
+  if(wrap){
+    wrap.className='tl-reply';
+    wrap.innerHTML='<div class="tl-reply-bubble">'+esc(v.managerReply)+'</div>'
+      +'<div class="tl-reply-meta">👔 主管 &nbsp;·&nbsp; '+esc(v.managerReplyDate)
+      +'<button class="tl-reply-edit-btn" onclick="event.stopPropagation();editVlogReply('+id+')">✏ 編輯</button>'
+      +'</div>';
+  }
+  toast('💬 回覆已送出');
+}
+function editVlogReply(id){
+  var v=visitLogs.find(function(x){return x.id===id;});
+  if(!v)return;
+  var wrap=document.getElementById('tl-reply-'+id);
+  if(wrap){
+    wrap.className='tl-reply-compose';
+    wrap.innerHTML='<div class="tl-reply-compose-lbl">✏ 主管回覆</div>'
+      +'<textarea class="tl-reply-input" id="tr-'+id+'" onclick="event.stopPropagation()">'+esc(v.managerReply)+'</textarea>'
+      +'<div style="margin-top:7px;display:flex;justify-content:flex-end;gap:7px">'
+      +'<button class="btn btn-s btn-sm" onclick="event.stopPropagation();cancelEditVlog('+id+')">取消</button>'
+      +'<button class="reply-send-btn" onclick="event.stopPropagation();saveVlogReply('+id+')">更新回覆</button>'
+      +'</div>';
+    var ta=document.getElementById('tr-'+id);
+    if(ta){ta.focus();ta.setSelectionRange(ta.value.length,ta.value.length);}
+  }
+}
+function cancelEditVlog(id){
+  var v=visitLogs.find(function(x){return x.id===id;});
+  if(!v)return;
+  var wrap=document.getElementById('tl-reply-'+id);
+  if(wrap){
+    wrap.className='tl-reply';
+    wrap.innerHTML='<div class="tl-reply-bubble">'+esc(v.managerReply)+'</div>'
+      +'<div class="tl-reply-meta">👔 主管 &nbsp;·&nbsp; '+esc(v.managerReplyDate)
+      +'<button class="tl-reply-edit-btn" onclick="event.stopPropagation();editVlogReply('+id+')">✏ 編輯</button>'
+      +'</div>';
+  }
 }
 
 // ── Render Customers ──
@@ -683,10 +729,16 @@ function renderCusts(filter){
   if(filter==='active')list=list.filter(function(c){return c.status==='active';});
   else if(filter==='urgent')list=list.filter(function(c){return c.status==='active'&&fuUrgency(c)==='urgent';});
   else if(filter==='soon')list=list.filter(function(c){return c.status==='active'&&fuUrgency(c)==='soon';});
+  else if(filter==='stale')list=list.filter(function(c){return c.status==='active';});
   else if(filter==='frozen')list=list.filter(function(c){return c.status==='frozen';});
   else if(filter==='dead')list=list.filter(function(c){return c.status==='dead';});
   else if(['strategic','partner','prospect','tracking','win'].indexOf(filter)>-1)list=list.filter(function(c){return c.grade===filter&&c.status==='active';});
-  list.sort(function(a,b){return custSortKey(a)-custSortKey(b);});
+  // 最久未跟進：用最後一筆拜訪紀錄的天數排序
+  if(filter==='stale'){
+    list.sort(function(a,b){return custStaleness(b.id)-custStaleness(a.id);});
+  } else {
+    list.sort(function(a,b){return custSortKey(a)-custSortKey(b);});
+  }
 
   var activeH='',frozenH='',deadH='';
   list.forEach(function(c){
@@ -717,8 +769,30 @@ function renderCusts(filter){
     actions+='</div>';
 
     var replyH='';
-    if(role==='manager')replyH='<div class="rbox"><div class="rlbl">✏ 主管整體回覆</div><textarea class="rinput" id="cr-'+c.id+'" onclick="event.stopPropagation()">'+esc(c.reply)+'</textarea>'+(c.replyDate?'<div class="rmeta">'+esc(c.replyDate)+'</div>':'')+'<button class="reply-send-btn" style="margin-top:7px" onclick="event.stopPropagation();saveCustReply('+c.id+')">送出回覆</button></div>';
-    else if(c.reply)replyH='<div class="rbox"><div class="rlbl">💬 主管建議</div><div class="rtxt">'+esc(c.reply)+'</div><div class="rmeta">'+esc(c.replyDate)+'</div></div>';
+    if(role==='manager'){
+      if(c.reply){
+        // 已有回覆 → 顯示泡泡
+        replyH='<div class="rbox" id="cust-reply-wrap-'+c.id+'">'
+          +'<div class="rlbl">💬 主管整體建議</div>'
+          +'<div class="tl-reply-bubble" style="margin-bottom:6px">'+esc(c.reply)+'</div>'
+          +'<div class="tl-reply-meta">👔 主管 &nbsp;·&nbsp; '+esc(c.replyDate)
+          +'<button class="tl-reply-edit-btn" onclick="event.stopPropagation();editCustReply('+c.id+')">✏ 編輯</button>'
+          +'</div></div>';
+      } else {
+        // 尚無回覆 → 顯示輸入框
+        replyH='<div class="rbox" id="cust-reply-wrap-'+c.id+'">'
+          +'<div class="rlbl">✏ 主管整體建議</div>'
+          +'<textarea class="rinput" id="cr-'+c.id+'" placeholder="輸入對這個客戶的整體建議…" onclick="event.stopPropagation()"></textarea>'
+          +'<div style="margin-top:7px;display:flex;justify-content:flex-end">'
+          +'<button class="reply-send-btn" onclick="event.stopPropagation();saveCustReply('+c.id+')">送出回覆</button>'
+          +'</div></div>';
+      }
+    } else if(c.reply){
+      // 業務視角：只讀泡泡
+      replyH='<div class="rbox"><div class="rlbl">💬 主管建議</div>'
+        +'<div class="tl-reply-bubble" style="margin-bottom:6px">'+esc(c.reply)+'</div>'
+        +'<div class="tl-reply-meta">👔 主管 &nbsp;·&nbsp; '+esc(c.replyDate)+'</div></div>';
+    }
 
     var html='<div class="cc '+ccls+'" id="cc-'+c.id+'">'
       +'<div class="cchdr" onclick="togCard('+c.id+')">'
@@ -756,8 +830,55 @@ function saveCustReply(id){
   var c=custs.find(function(x){return x.id===id;});
   var ta=document.getElementById('cr-'+id);
   if(!c||!ta)return;
-  c.reply=ta.value;c.replyDate=tsNow();
-  toast('💬 主管回覆已送出');
+  var txt=ta.value.trim();
+  if(!txt){toast('⚠ 請輸入回覆內容');return;}
+  c.reply=txt;
+  c.replyDate=tsNow();
+  // 把輸入框換成對話泡泡
+  var wrap=document.getElementById('cust-reply-wrap-'+id);
+  if(wrap){
+    wrap.className='rbox';
+    wrap.innerHTML=buildCustReplyBubble(id, c);
+  }
+  toast('💬 回覆已送出');
+}
+function buildCustReplyBubble(id, c){
+  if(role==='manager'){
+    return '<div class="rlbl">💬 主管整體建議</div>'
+      +'<div class="tl-reply-bubble" style="margin-bottom:6px">'+esc(c.reply)+'</div>'
+      +'<div class="tl-reply-meta">👔 主管 &nbsp;·&nbsp; '+esc(c.replyDate)
+      +'<button class="tl-reply-edit-btn" onclick="event.stopPropagation();editCustReply('+id+')">✏ 編輯</button>'
+      +'</div>';
+  } else {
+    return '<div class="rlbl">💬 主管建議</div>'
+      +'<div class="tl-reply-bubble" style="margin-bottom:6px">'+esc(c.reply)+'</div>'
+      +'<div class="tl-reply-meta">👔 主管 &nbsp;·&nbsp; '+esc(c.replyDate)+'</div>';
+  }
+}
+function editCustReply(id){
+  var c=custs.find(function(x){return x.id===id;});
+  if(!c)return;
+  var wrap=document.getElementById('cust-reply-wrap-'+id);
+  if(wrap){
+    wrap.className='rbox';
+    wrap.innerHTML='<div class="rlbl">✏ 主管整體建議</div>'
+      +'<textarea class="rinput" id="cr-'+id+'" onclick="event.stopPropagation()">'+esc(c.reply)+'</textarea>'
+      +'<div style="margin-top:7px;display:flex;justify-content:flex-end;gap:7px">'
+      +'<button class="btn btn-s btn-sm" onclick="event.stopPropagation();cancelEditCust('+id+')">取消</button>'
+      +'<button class="reply-send-btn" onclick="event.stopPropagation();saveCustReply('+id+')">更新回覆</button>'
+      +'</div>';
+    var ta=document.getElementById('cr-'+id);
+    if(ta){ta.focus();ta.setSelectionRange(ta.value.length,ta.value.length);}
+  }
+}
+function cancelEditCust(id){
+  var c=custs.find(function(x){return x.id===id;});
+  if(!c)return;
+  var wrap=document.getElementById('cust-reply-wrap-'+id);
+  if(wrap){
+    wrap.className='rbox';
+    wrap.innerHTML=buildCustReplyBubble(id, c);
+  }
 }
 
 // ── Delete Customer (需求1) ──
@@ -804,28 +925,7 @@ function reactivate(id){
 
 // ── History ──
 function repStaleness(custId){var logs=logsFor(custId);if(!logs.length)return 9999;return daysSince(logs[0].dateVal);}
-function renderHist(){
-  var shown=custs.slice();
-  if(role==='manager'&&histRepFilt!=='all')shown=shown.filter(function(c){return c.rep===histRepFilt;});
-  shown.sort(function(a,b){var da=a.status==='dead'?-1:repStaleness(a.id);var db=b.status==='dead'?-1:repStaleness(b.id);return db-da;});
-  var html='',openDiv=false,doneDiv=false;
-  shown.forEach(function(c){
-    var logs=logsFor(c.id),latestLog=logs[0];if(!latestLog)return;
-    var stale=repStaleness(c.id),isDead=c.status==='dead',pCls,pTxt;
-    if(isDead){pCls='pri-done';pTxt='🗃 已結案';}
-    else if(stale>=30){pCls='pri-crit';pTxt='⚠ 超過 '+stale+' 天未更新 — 需立即確認';}
-    else if(stale>=14){pCls='pri-warn';pTxt='🟡 '+stale+' 天未更新，請跟進';}
-    else{pCls='pri-ok';pTxt='🟢 '+stale+' 天前回報';}
-    if(!isDead&&!openDiv){html+='<div class="sdiv">進行中(最久未跟進優先)</div>';openDiv=true;}
-    if(isDead&&!doneDiv){html+='<div class="sdiv">已結案</div>';doneDiv=true;}
-    var tlCid='tl-h-'+c.id;
-    html+='<div class="ri"><div class="pri-bar '+pCls+'">'+pTxt+'</div>'
-      +'<div class="ri-hdr"><span class="ri-date">最後回報：'+esc(latestLog.date)+'</span><span class="ri-rep">'+esc(c.rep)+'</span><span class="ri-cust">→ '+esc(c.name)+'</span><span style="flex:1"></span>'+(isDead?'<span class="badge b-dead">已結案</span>':'')+'</div>'
-      +'<div class="tl-wrap" style="margin-top:0;border-top:none;padding-top:0"><div class="tl-hdr"><div class="tl-title">拜訪紀錄</div><div class="tl-count">共 '+logs.length+' 筆</div></div><div id="'+tlCid+'">'+buildTimeline(c.id,false,tlCid)+'</div></div>'
-      +'</div>';
-  });
-  document.getElementById('hist-list').innerHTML=html||'<div style="padding:24px;text-align:center;color:var(--tx3)">暫無紀錄</div>';
-}
+function custStaleness(custId){return repStaleness(custId);}
 
 // ── Report Form ──
 function submitRep(){
@@ -842,7 +942,7 @@ function submitRep(){
   document.querySelectorAll('.achip.active').forEach(function(b){b.classList.remove('active');});
   document.getElementById('r-note').value='';document.getElementById('r-quote').value='';
   toast('✅ 回報已送出！');
-  setTimeout(function(){goPage('history',document.querySelectorAll('.ni')[3]);},600);
+  setTimeout(function(){goPage('customers',document.querySelectorAll('.ni')[1]);},600);
 }
 
 // ── Add Customer ──
@@ -889,12 +989,12 @@ function renderFormOptions(){
     sel.innerHTML='<option value="">選擇客戶…</option>'+custs.filter(function(c){return c.status!=='dead';}).map(function(c){return'<option>'+esc(c.name)+'</option>';}).join('');
     if(prev)sel.value=prev;
   }
-  // 業務篩選按鈕(客戶管理 & 回報紀錄)
-  ['cust-rep-chips','hist-rep-chips'].forEach(function(cid){
-    var el=document.getElementById(cid);if(!el)return;
-    el.innerHTML='<button class="fchip active" onclick="'+(cid==='cust-rep-chips'?'filtCustRep':'filtHistRep')+'(\'all\',this)">全部業務</button>'
-      +names.map(function(n){return'<button class="fchip" onclick="'+(cid==='cust-rep-chips'?'filtCustRep':'filtHistRep')+'(\''+n+'\',this)">'+esc(n)+'</button>';}).join('');
-  });
+  // 業務篩選按鈕（客戶管理）
+  var crEl=document.getElementById('cust-rep-chips');
+  if(crEl){
+    crEl.innerHTML='<button class="fchip active" onclick="filtCustRep(\'all\',this)">全部業務</button>'
+      +names.map(function(n){return'<button class="fchip" onclick="filtCustRep(\''+n+'\',this)">'+esc(n)+'</button>';}).join('');
+  }
   // 月度總覽業務下拉
   var ovSel=document.getElementById('ov-filter-sel');
   if(ovSel){ovSel.innerHTML='<option value="all">全部業務</option>'+names.map(function(n){return'<option value="'+esc(n)+'">'+esc(n)+'</option>';}).join('');}
@@ -902,13 +1002,15 @@ function renderFormOptions(){
 
 // ── Nav ──
 function goPage(p,btn){
-  ['overview','customers','report-form','history','settings'].forEach(function(n){document.getElementById('pg-'+n).style.display=n===p?'':'none';});
+  ['overview','customers','report-form','settings'].forEach(function(n){
+    var el=document.getElementById('pg-'+n);
+    if(el)el.style.display=n===p?'':'none';
+  });
   document.querySelectorAll('.ni').forEach(function(b){b.classList.remove('active');});
   if(btn)btn.classList.add('active');
   curPage=p;
-  document.getElementById('tb-title').textContent={overview:'月度總覽',customers:'客戶管理','report-form':'每日回報',history:'回報紀錄',settings:'系統設定'}[p]||'';
+  document.getElementById('tb-title').textContent={overview:'月度總覽',customers:'客戶管理','report-form':'每日回報',settings:'系統設定'}[p]||'';
   if(p==='customers'){autoFreeze();renderCusts(custFilt);}
-  if(p==='history')renderHist();
   if(p==='settings')renderRepMgmt();
 }
 function setRole(r,btn){
@@ -916,12 +1018,10 @@ function setRole(r,btn){
   document.querySelectorAll('.rb').forEach(function(b){b.classList.remove('active');});btn.classList.add('active');
   showRepBars(r==='manager');
   if(curPage==='customers')renderCusts(custFilt);
-  if(curPage==='history')renderHist();
 }
 function filtCust(f,btn){document.querySelectorAll('#cust-tabs .fchip').forEach(function(b){b.classList.remove('active');});btn.classList.add('active');renderCusts(f);}
 function filtCustRep(rep,btn){custRepFilt=rep;document.querySelectorAll('#cust-rep-chips .fchip').forEach(function(b){b.classList.remove('active');});btn.classList.add('active');renderCusts(custFilt);}
-function filtHistRep(rep,btn){histRepFilt=rep;document.querySelectorAll('#hist-rep-chips .fchip').forEach(function(b){b.classList.remove('active');});btn.classList.add('active');renderHist();}
-function showRepBars(isM){var cb=document.getElementById('cust-rep-bar'),hb=document.getElementById('hist-rep-bar');if(cb)cb.classList.toggle('show',isM);if(hb)hb.classList.toggle('show',isM);}
+function showRepBars(isM){var cb=document.getElementById('cust-rep-bar');if(cb)cb.classList.toggle('show',isM);}
 
 // ── Modal / Toast ──
 function openMod(n){document.getElementById('mod-'+n).classList.add('open');}
